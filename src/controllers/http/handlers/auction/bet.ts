@@ -3,7 +3,6 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 
 import type { HttpAuctionController } from ".";
-import type { auctionBidService } from "../../../../di/auction";
 
 const betSchema = z.object({
     auctionId: z.string(),

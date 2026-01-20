@@ -11,7 +11,11 @@
     "bracketSameLine": false,
     "singleAttributePerLine": true,
     "proseWrap": "always",
-    "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+    "plugins": [
+        "prettier-plugin-organize-imports",
+        "@ianvs/prettier-plugin-sort-imports"
+    ],
+    "organizeImportsSkipDestructiveCodeActions": false,
     "importOrder": [
         "<BUILTIN_MODULES>",
         "<THIRD_PARTY_MODULES>",

@@ -1,3 +1,5 @@
+import type { Balance } from "@prisma/client";
+
 import type { FetchUserIn } from "../../repo/user/dto/fetch";
 import type { FetchUserByIdOut } from "./dto/fetch";
 import type { UserService } from "./service";
@@ -19,6 +21,12 @@ export async function fetchUserById(
     if (balances.length === 0) {
         throw new Error("Balances not found");
     }
+
+    balances.forEach((balance: Record<string, any>) => {
+        delete balance.userId;
+        delete balance.id;
+        delete balance.addedAt;
+    });
 
     const out: FetchUserByIdOut = {
         user: user,
