@@ -1,4 +1,7 @@
-import type { RegisterUserIn, RegisterUserOut } from "./dto/register";
+import type {
+    RegisterUserIn,
+    RegisterUserOut,
+} from "./dto/register";
 import type { UserService } from "./service";
 
 export async function registerUser(
@@ -44,15 +47,17 @@ export async function registerUser(
     // дефолтный баланс для пользователя, поэтому создаем его вместе с регистрацией.
     if (!fetchUserBalance) {
         // так как мы не используем уникальность баланса, т.к это физически невозможно типизировать на уровне бд, мы используем транзакцию, дабы избежать race condition.
-        await this.balanceRepo.db.$transaction(async (tx) => {
-            out.balance = await tx.balance.create({
-                data: {
-                    userId: input.userId,
-                    type: "stars",
-                    balance: 0,
-                },
-            });
-        });
+        await this.balanceRepo.db.$transaction(
+            async (tx) => {
+                out.balance = await tx.balance.create({
+                    data: {
+                        userId: input.userId,
+                        type: "stars",
+                        balance: 0,
+                    },
+                });
+            }
+        );
     }
 
     return out;

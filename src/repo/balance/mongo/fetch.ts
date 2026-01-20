@@ -1,4 +1,7 @@
-import type { FetchBalanceIn, FetchBalancesByUserIdIn } from "../dto/fetch";
+import type {
+    FetchBalanceIn,
+    FetchBalancesByUserIdIn,
+} from "../dto/fetch";
 import type { BalanceRepo } from "./repo";
 
 export async function fetchBalanceByIdAndType(
@@ -15,7 +18,10 @@ export async function fetchBalanceByIdAndType(
     return balance;
 }
 
-export async function fetchBalancesByUserId(this: BalanceRepo, input: FetchBalancesByUserIdIn) {
+export async function fetchBalancesByUserId(
+    this: BalanceRepo,
+    input: FetchBalancesByUserIdIn
+) {
     const balances = await this.db.balance.findMany({
         where: {
             userId: input.userId,

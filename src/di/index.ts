@@ -22,7 +22,7 @@ export class DI {
 
     readonly BalanceRepo = balanceRepo;
     readonly BalanceService = balanceService;
-    
+
     readonly ActionRepo = actionRepo;
 
     constructor() {
