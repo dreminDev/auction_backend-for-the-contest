@@ -1,14 +1,10 @@
 import type { DI } from ".";
-import mongoose, { mongo } from "mongoose";
-import { config } from "../config";
-
-
+import { PrismaClient } from "@prisma/client";
 
 export async function database(this: DI) {
-    mongoose.set("strictQuery", true);
-    const db = await mongoose.connect("mongodb://localhost:27017",{
-        dbName: config.DATABASE_NAME,
-        user: config.DATABASE_USER,
-        pass: config.DATABASE_PASSWORD,
-    })
+    // Prisma 7: Connection URL is read from prisma.config.ts
+    // For direct connections, PrismaClient reads from config automatically
+    const prisma = new PrismaClient();
+
+    return this.set("db", prisma);
 }

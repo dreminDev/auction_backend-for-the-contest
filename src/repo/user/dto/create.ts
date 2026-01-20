@@ -1,3 +1,3 @@
-import type { User } from "../../../model/user";
+import type { User } from "@prisma/client";
 
-export type CreateUserIn = Omit<User, "addedAt">;
+export type CreateUserIn = Omit<User, "id" | "addedAt">;

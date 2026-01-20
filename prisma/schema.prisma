@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+}
+
+model User {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId   Int      @map("userId")
+
+  username String?
+  first_name String?
+  last_name String?
+
+  addedAt  DateTime @default(now()) @map("addedAt")
+
+  @@map("users")
+  @@index([userId])
+}
+
+model Balance {
+  id       String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId   Int         @map("userId")
+  type     BalanceType @map("type")
+  balance  Int         @default(0) @map("balance")
+  addedAt  DateTime    @default(now()) @map("addedAt")
+
+  @@map("balances")
+  @@index([userId])
+}
+
+enum BalanceType {
+  stars
+}
+
+model Action {
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId   Int        @map("userId")
+  action   ActionType @map("action")
+  amount   Int        @map("amount")
+  addedAt  DateTime   @default(now()) @map("addedAt")
+
+  @@map("actions")
+  @@index([userId])
+}
+
+enum ActionType {
+  balance
+  bet
+}

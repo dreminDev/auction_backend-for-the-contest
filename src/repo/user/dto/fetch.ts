@@ -1,4 +1,4 @@
-import type { User } from "../../../model/user";
+import type { User } from "@prisma/client";
 
 export type FetchUserIn = {
     userId: number;
