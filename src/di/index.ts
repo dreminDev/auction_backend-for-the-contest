@@ -1,7 +1,5 @@
 import { logger } from "../../pkg/logger";
 import { database } from "./database";
-
-/* Dependency Injection container*/
 export class DI {
     protected injections: Map<String, unknown> = new Map();
 
