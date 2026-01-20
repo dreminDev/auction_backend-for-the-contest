@@ -40,10 +40,11 @@ enum AuctionStatus {
 }
 model Auction {
   id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  
+
 }
 
 enum ActionType {
+  register
   balance
   bet
 }
@@ -51,11 +52,9 @@ model Action {
   id       String     @id @default(auto()) @map("_id") @db.ObjectId
   userId   Int        @map("userId")
   action   ActionType @map("action")
-  amount   Int        @map("amount")
   addedAt  DateTime   @default(now()) @map("addedAt")
-
+  metaData Json?      @default("{}") @map("metaData")
+  
   @@map("actions")
   @@index([userId])
 }
-
-

@@ -24,7 +24,8 @@ export function userService(this: DI) {
     const userService = new UserService(
         this.UserRepo(),
         this.BalanceRepo(),
-        this.BalanceService()
+        this.BalanceService(),
+        this.ActionService()
     );
 
     return this.set("userService", userService);

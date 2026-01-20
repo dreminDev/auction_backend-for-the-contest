@@ -1,5 +1,5 @@
 import { logger } from "../../pkg/logger";
-import { actionRepo } from "./action";
+import { actionRepo, actionService } from "./action";
 import { balanceRepo, balanceService } from "./balance";
 import { database } from "./database";
 import { httpServer } from "./server";
@@ -24,7 +24,8 @@ export class DI {
     readonly BalanceService = balanceService;
 
     readonly ActionRepo = actionRepo;
-
+    readonly ActionService = actionService;
+    
     constructor() {
         this.injections = new Map();
     }

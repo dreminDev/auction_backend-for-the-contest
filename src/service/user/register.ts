@@ -46,7 +46,7 @@ export async function registerUser(
 
     // дефолтный баланс для пользователя, поэтому создаем его вместе с регистрацией.
     if (!fetchUserBalance) {
-        // так как мы не используем уникальность баланса, т.к это физически невозможно типизировать на уровне бд, мы используем транзакцию, дабы избежать race condition.
+        // так как мы не используем уникальность баланса, т.к это физически невозможно ограничить на уровне бд, мы используем транзакцию, дабы избежать race condition.
         await this.balanceRepo.db.$transaction(
             async (tx) => {
                 out.balance = await tx.balance.create({
@@ -58,6 +58,15 @@ export async function registerUser(
                 });
             }
         );
+    }
+
+    // собираем статистику действий пользователя для метрик бизнеса/графаны
+    // в метадату можно записать условно айпи юзера, устройство и данные какие либо по которым можно создавать метрики.
+    if (out.isNewUser) {
+        await this.actionService.newAction({
+            userId: input.userId,
+            action: "register",
+        });
     }
 
     return out;
