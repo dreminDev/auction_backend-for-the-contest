@@ -1,22 +1,59 @@
-import type { RegisterUserIn } from "./dto/register";
+import type { RegisterUserIn, RegisterUserOut } from "./dto/register";
 import type { UserService } from "./service";
 
-export async function registerUser(this: UserService, input: RegisterUserIn) {
-    const [fetchUser, fetchUserBalance] = await Promise.all([
-        this.userRepo.fetchUser({ userId: input.userId }),
-        this.balanceRepo.fetchBalance({ userId: input.userId }),
-    ]);
+export async function registerUser(
+    this: UserService,
+    input: RegisterUserIn
+): Promise<RegisterUserOut> {
+    const [fetchUser, fetchUserBalance] = await Promise.all(
+        [
+            this.userRepo.fetchUserById({
+                userId: input.userId,
+            }),
+            this.balanceService.fetchBalanceByIdAndType({
+                userId: input.userId,
+                type: "stars",
+            }),
+        ]
+    );
+
+    const out: RegisterUserOut = {
+        isNewUser: false,
+        user: null,
+        balance: null,
+    };
 
     if (fetchUser && fetchUserBalance) {
-        throw new Error("User already registered");
+        out.isNewUser = false;
+        out.user = fetchUser;
+        out.balance = fetchUserBalance;
+
+        return out;
     }
 
     if (!fetchUser) {
-        await this.userRepo.createUser({
+        out.isNewUser = true;
+        out.user = await this.userRepo.createUser({
             userId: input.userId,
             username: null,
             first_name: null,
             last_name: null,
         });
     }
+
+    // дефолтный баланс для пользователя, поэтому создаем его вместе с регистрацией.
+    if (!fetchUserBalance) {
+        // так как мы не используем уникальность баланса, т.к это физически невозможно типизировать на уровне бд, мы используем транзакцию, дабы избежать race condition.
+        await this.balanceRepo.db.$transaction(async (tx) => {
+            out.balance = await tx.balance.create({
+                data: {
+                    userId: input.userId,
+                    type: "stars",
+                    balance: 0,
+                },
+            });
+        });
+    }
+
+    return out;
 }

@@ -1,7 +1,7 @@
 import type { PrismaClient } from "@prisma/client";
 
 import { createBalance } from "./create";
-import { fetchBalance } from "./fetch";
+import { fetchBalanceByIdAndType, fetchBalancesByUserId } from "./fetch";
 
 export class BalanceRepo {
     readonly db: PrismaClient;
@@ -11,5 +11,6 @@ export class BalanceRepo {
     }
 
     createBalance = createBalance;
-    fetchBalance = fetchBalance;
+    fetchBalanceByIdAndType = fetchBalanceByIdAndType;
+    fetchBalancesByUserId = fetchBalancesByUserId;
 }

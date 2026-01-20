@@ -4,9 +4,14 @@ import { UserRepo } from "../repo/user/mongo/repo";
 import { UserService } from "../service/user/service";
 
 export function httpUserController(this: DI) {
-    const httpUserController = new HttpUserController(this.HttpServer());
+    const httpUserController = new HttpUserController(
+        this.HttpServer()
+    );
 
-    return this.set("httpUserController", httpUserController);
+    return this.set(
+        "httpUserController",
+        httpUserController
+    );
 }
 
 export function userRepo(this: DI) {
@@ -16,7 +21,11 @@ export function userRepo(this: DI) {
 }
 
 export function userService(this: DI) {
-    const userService = new UserService(this.UserRepo(), this.BalanceRepo());
+    const userService = new UserService(
+        this.UserRepo(),
+        this.BalanceRepo(),
+        this.BalanceService()
+    );
 
     return this.set("userService", userService);
 }

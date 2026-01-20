@@ -10,7 +10,12 @@ if (mongoUser && mongoPassword) {
     // Если есть учетные данные, используем аутентификацию
     // authSource указывает базу данных для аутентификации (обычно admin)
     // directConnection=true для прямого подключения без репликации
-    console.log("Using authentication", mongoUser, mongoPassword, mongoName);
+    console.log(
+        "Using authentication",
+        mongoUser,
+        mongoPassword,
+        mongoName
+    );
     url = `mongodb://${encodeURIComponent(mongoUser)}:${encodeURIComponent(mongoPassword)}@localhost:27017/${mongoName}?authSource=admin&replicaSet=rs0`;
     console.log("URL", url);
 } else {

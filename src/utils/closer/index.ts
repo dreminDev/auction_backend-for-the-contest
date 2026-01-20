@@ -4,7 +4,9 @@
 */
 const callbacks: Array<() => Promise<unknown>> = [];
 
-export const onExit = (callback: () => Promise<unknown>): void => {
+export const onExit = (
+    callback: () => Promise<unknown>
+): void => {
     callbacks.push(callback);
 };
 

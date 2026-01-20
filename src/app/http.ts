@@ -1,6 +1,5 @@
 import type { App } from ".";
 import { config } from "../config";
-import { onExit } from "../utils/closer";
 
 export async function httpServer(this: App) {
     const httpServer = this.di.HttpServer();
@@ -19,7 +18,8 @@ export async function httpServer(this: App) {
     } catch (error) {
         this.di.logger.error({
             cause: error,
-            message: "some error ocured while starting HTTP server",
+            message:
+                "some error ocured while starting HTTP server",
         });
     }
 }

@@ -2,17 +2,24 @@ import dotenv from "dotenv";
 import { z } from "zod";
 import { logger } from "../../pkg/logger";
 
-export const IS_DEV = process.env.NODE_ENV !== "production" && Boolean(process.env.NODE_ENV);
+export const IS_DEV =
+    process.env.NODE_ENV !== "production" &&
+    Boolean(process.env.NODE_ENV);
 
 const configValidator = z.object({
-    ENV: z.enum(["production", "development", "test"]).default("production"),
+    ENV: z
+        .enum(["production", "development", "test"])
+        .default("production"),
 
     MONGO_USER: z.string(),
     MONGO_PASSWORD: z.string(),
     MONGO_NAME: z.string(),
 
     HTTP_SERVER_HOST: z.string().default("0.0.0.0"),
-    HTTP_SERVER_PORT: z.string().transform(Number).default(5000),
+    HTTP_SERVER_PORT: z
+        .string()
+        .transform(Number)
+        .default(5000),
 });
 
 const envConfig = dotenv.config({
@@ -22,7 +29,8 @@ const envConfig = dotenv.config({
 if (envConfig.error || !envConfig.parsed) {
     logger.fatal({
         cause: envConfig.error,
-        message: "some error ocured while parsing .env, please recheck and try again",
+        message:
+            "some error ocured while parsing .env, please recheck and try again",
     });
 
     process.exit(1);
@@ -44,7 +52,12 @@ if (!parsed.success) {
         message: "validation error ocured for config file",
     });
 
-    throw new Error("validation error ocured for config file", { cause: parsed.error });
+    throw new Error(
+        "validation error ocured for config file",
+        {
+            cause: parsed.error,
+        }
+    );
 }
 
 export const config = {
