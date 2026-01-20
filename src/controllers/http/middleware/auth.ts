@@ -21,11 +21,11 @@ export async function httpAuthMiddleware(
     this: HttpMiddleware,
     req: FastifyRequest
 ) {
+    req[userIdSym] = fakeUser.id;
+
     if (!req.url.includes(httpUserPrefix)) {
         return;
     }
-
-    req[userIdSym] = fakeUser.id;
 
     await this.userService.registerUser({
         userId: fakeUser.id,

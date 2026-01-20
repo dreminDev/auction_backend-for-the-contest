@@ -5,6 +5,11 @@ import type { AuctionService } from "../../auction/service";
 import type { BalanceService } from "../../balance/service";
 import type { UserService } from "../../user/service";
 import { newBet } from "./bet";
+import {
+    fetchActionBetListByAuctionId,
+    fetchAuctionById,
+    fetchAuctionLastBetByAuctionId,
+} from "./fetch";
 
 export class AuctionBidService {
     protected userService: UserService;
@@ -29,6 +34,8 @@ export class AuctionBidService {
         this.balanceRepo = balanceRepo;
         this.actionBetRepo = actionBetRepo;
     }
-
+    fetchAuctionLastBetByAuctionId = fetchAuctionLastBetByAuctionId;
+    fetchActionBetListByAuctionId = fetchActionBetListByAuctionId;
+    fetchAuctionById = fetchAuctionById;
     newBet = newBet;
 }

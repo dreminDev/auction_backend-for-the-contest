@@ -55,6 +55,7 @@ model Auction {
   endedAt  DateTime? @map("endedAt")
 
   @@index([addedAt, status])
+  @@map("auctions")
 }
 
 model AuctionBet {
@@ -64,8 +65,20 @@ model AuctionBet {
   amount Int @map("amount")
   addedAt  DateTime   @default(now()) @map("addedAt")
   metaData Json?      @default("{}") @map("metaData")
+
   @@map("auctionBets")
   @@index([userId, auctionId])
+}
+
+model Gift {
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  ownerId   Int    @default(0)    @map("ownerId")
+
+  
+
+  updatedAt DateTime   @default(now()) @map("updatedAt")
+  addedAt  DateTime   @default(now()) @map("addedAt")
+  @@map("gifts")
 }
 
 enum ActionType {

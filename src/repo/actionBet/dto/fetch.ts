@@ -1,3 +1,5 @@
-import type { Prisma } from "@prisma/client";
-
-export type FetchAuctionBetIn = Prisma.AuctionBetWhereInput;
+export type FetchAuctionBetIn = {
+    auctionId: string;
+    limit: number;
+    offset: number;
+};

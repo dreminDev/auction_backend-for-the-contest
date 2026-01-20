@@ -1,6 +1,6 @@
 import type { PrismaClient } from "@prisma/client";
 
-import { fetchAuctionLastBetByAuctionId } from "./fetch";
+import { fetchAuctionBets, fetchAuctionLastBetByAuctionId } from "./fetch";
 
 export class ActionBetRepo {
     readonly db: PrismaClient;
@@ -9,5 +9,6 @@ export class ActionBetRepo {
         this.db = db;
     }
 
+    fetchAuctionBets = fetchAuctionBets;
     fetchAuctionLastBetByAuctionId = fetchAuctionLastBetByAuctionId;
 }

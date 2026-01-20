@@ -3,11 +3,11 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 
 import type { HttpAuctionController } from ".";
+import { userIdSym } from "../../middleware/auth";
 
 const betSchema = z.object({
     auctionId: z.string(),
     amount: z.number(),
-    userId: z.number(),
     balanceType: z.enum(BalanceType),
 });
 
@@ -16,6 +16,8 @@ export async function bet(
     req: FastifyRequest,
     res: FastifyReply
 ) {
+    const userId = req[userIdSym];
+
     const validated = betSchema.safeParse(req.body);
     if (!validated.success) {
         return res.status(400).send({
@@ -27,7 +29,7 @@ export async function bet(
     await this.auctionBidService.newBet({
         auctionId: validated.data.auctionId,
         amount: validated.data.amount,
-        userId: validated.data.userId,
+        userId: userId,
         balanceType: validated.data.balanceType,
     });
 

@@ -2,8 +2,11 @@ import type { FastifyInstance, FastifyRequest } from "fastify";
 
 import type { AuctionService } from "../../../../service/auction/service";
 import type { AuctionBidService } from "../../../../service/bid/auction/service";
+import { bet } from "./bet";
+import { createAuction } from "./create";
+import type { CreateAuctionIn } from "./dto/create";
 import type { FetchAuctionListByStatusIn } from "./dto/fetch";
-import { fetchAuctionListByStatus } from "./fetch";
+import { fetchAuctionById, fetchAuctionListByStatus } from "./fetch";
 
 export const httpAuctionPrefix = "/auction";
 
@@ -23,6 +26,9 @@ export class HttpAuctionController {
     }
 
     fetchAuctionListByStatus = fetchAuctionListByStatus;
+    createAuction = createAuction;
+    fetchAuctionById = fetchAuctionById;
+    bet = bet;
 
     async setup() {
         await this.app.register(
@@ -36,8 +42,23 @@ export class HttpAuctionController {
                         res
                     ) => this.fetchAuctionListByStatus(req, res)
                 );
-            },
 
+                fastify.put(
+                    "/",
+                    async (
+                        req: FastifyRequest<{ Body: CreateAuctionIn }>,
+                        res
+                    ) => this.createAuction(req, res)
+                );
+
+                fastify.post("/bet", async (req, res) =>
+                    this.bet(req, res)
+                );
+
+                fastify.get("/info", async (req: FastifyRequest, res) =>
+                    this.fetchAuctionById(req, res)
+                );
+            },
             { prefix: httpAuctionPrefix }
         );
     }

@@ -5,7 +5,7 @@ import { z } from "zod";
 import type { HttpAuctionController } from ".";
 import type { FetchAuctionListByStatusIn } from "./dto/fetch";
 
-const validator = z.object({
+const fetchAuctionListByStatusValidator = z.object({
     status: z.enum(AuctionStatus),
 });
 
@@ -14,14 +14,41 @@ export async function fetchAuctionListByStatus(
     req: FastifyRequest<{ Params: FetchAuctionListByStatusIn }>,
     res: FastifyReply
 ) {
-    const validated = validator.safeParse(req.query);
+    const validated = fetchAuctionListByStatusValidator.safeParse(
+        req.query
+    );
     if (!validated.success) {
-        return res.status(400).send({ error: validated.error.message });
+        return res.status(400).send({ error: validated.error.issues });
     }
 
     const out = await this.auctionService.fetchAuctionListByStatus(
         validated.data.status
     );
+
+    res.send(out);
+}
+
+const fetchAuctionByIdValidator = z.object({
+    auctionId: z.string(),
+    limit: z.number().optional(),
+    offset: z.number().optional(),
+});
+
+export async function fetchAuctionById(
+    this: HttpAuctionController,
+    req: FastifyRequest,
+    res: FastifyReply
+) {
+    const validated = fetchAuctionByIdValidator.safeParse(req.query);
+    if (!validated.success) {
+        return res.status(400).send({ error: validated.error.issues });
+    }
+
+    const out = await this.auctionBidService.fetchAuctionById({
+        auctionId: validated.data.auctionId,
+        limit: validated.data.limit ?? 10,
+        offset: validated.data.offset ?? 0,
+    });
 
     res.send(out);
 }

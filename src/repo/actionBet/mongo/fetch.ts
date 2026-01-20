@@ -1,15 +1,20 @@
 import type { FetchAuctionBetIn } from "../dto/fetch";
 import type { ActionBetRepo } from "./repo";
 
-export async function fetchAuctionBet(
+export async function fetchAuctionBets(
     this: ActionBetRepo,
     input: FetchAuctionBetIn
 ) {
-    const auctionBet = await this.db.auctionBet.findFirst({
-        where: input,
+    const auctionBets = await this.db.auctionBet.findMany({
+        where: { auctionId: input.auctionId },
+        orderBy: {
+            amount: "desc",
+        },
+        take: input.limit,
+        skip: input.offset,
     });
 
-    return auctionBet;
+    return auctionBets;
 }
 
 export async function fetchAuctionLastBetByAuctionId(
