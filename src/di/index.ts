@@ -1,11 +1,13 @@
 import { logger } from "../../pkg/logger";
 import { database } from "./database";
+import { httpServer } from "./server";
 export class DI {
     protected injections: Map<String, unknown> = new Map();
 
-    protected logger = logger;
+    readonly logger = logger;
 
-    Database = database;
+    readonly Database = database;
+    readonly HttpServer = httpServer;
 
     constructor() {
         this.injections = new Map();
@@ -24,9 +26,9 @@ export class DI {
             return this.get(key) as T;
         }
 
-        this.logger.info(`Setting ${key} in DI`);
-
         this.injections.set(key, value);
+
+        this.logger.info(`Injected ${key} into DI`);
 
         return value;
     }

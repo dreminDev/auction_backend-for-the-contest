@@ -8,10 +8,9 @@ export const IS_DEV =
 const configValidator = z.object({
     ENV: z.enum(["production", "development", "test"]).default("production"),
 
-    DATABASE_NAME: z.string(),
-    DATABASE_USER: z.string(),
-    DATABASE_PASSWORD: z.string(),
-    
+    MONGO_USER: z.string(),
+    MONGO_PASSWORD: z.string(),
+    MONGO_NAME: z.string(),
 
     HTTP_SERVER_HOST: z.string().default("0.0.0.0"),
     HTTP_SERVER_PORT: z.string().transform(Number).default(5000),
