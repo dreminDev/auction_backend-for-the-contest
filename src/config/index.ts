@@ -2,8 +2,7 @@ import dotenv from "dotenv";
 import { z } from "zod";
 import { logger } from "../../pkg/logger";
 
-export const IS_DEV =
-    process.env.NODE_ENV !== "production" && Boolean(process.env.NODE_ENV);
+export const IS_DEV = process.env.NODE_ENV !== "production" && Boolean(process.env.NODE_ENV);
 
 const configValidator = z.object({
     ENV: z.enum(["production", "development", "test"]).default("production"),

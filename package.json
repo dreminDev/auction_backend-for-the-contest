@@ -5,10 +5,13 @@
     "private": true,
     "scripts": {
         "start": "bun run index.ts",
-        "dev": "bun run --watch index.ts"
+        "dev": "bun run --watch index.ts",
+        "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+        "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
     },
     "devDependencies": {
-        "@types/bun": "latest"
+        "@types/bun": "latest",
+        "prettier": "^3.2.5"
     },
     "peerDependencies": {
         "typescript": "^5.9.3"

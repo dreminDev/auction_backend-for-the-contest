@@ -7,9 +7,9 @@ import { httpCorsConfig } from "../config/server";
 export function httpServer(this: DI) {
     const httpServer = Fastify({
         logger: config.ENV === "development" ? this.logger : false,
-    })
+    });
 
     httpServer.register(fastifyCors, httpCorsConfig());
 
-    return this.set("server.http", httpServer);
+    return this.set("httpServer", httpServer);
 }

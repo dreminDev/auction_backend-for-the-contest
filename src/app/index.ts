@@ -6,8 +6,6 @@ export class App {
     HttpServer = httpServer;
 
     async start() {
-        await Promise.all([
-            this.HttpServer(),
-        ])
+        await Promise.all([this.HttpServer()]);
     }
 }

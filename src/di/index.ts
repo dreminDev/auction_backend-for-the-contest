@@ -1,6 +1,9 @@
 import { logger } from "../../pkg/logger";
+import { actionRepo } from "./action";
+import { balanceRepo } from "./balance";
 import { database } from "./database";
 import { httpServer } from "./server";
+import { httpUserController, userRepo, userService } from "./user";
 export class DI {
     protected injections: Map<String, unknown> = new Map();
 
@@ -8,6 +11,13 @@ export class DI {
 
     readonly Database = database;
     readonly HttpServer = httpServer;
+
+    readonly HttpUserController = httpUserController;
+    readonly UserRepo = userRepo;
+    readonly UserService = userService;
+
+    readonly BalanceRepo = balanceRepo;
+    readonly ActionRepo = actionRepo;
 
     constructor() {
         this.injections = new Map();

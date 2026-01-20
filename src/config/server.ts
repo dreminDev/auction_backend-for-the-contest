@@ -1,5 +1,5 @@
 export function httpCorsConfig() {
     return {
-        origin: "*"
-    }
+        origin: "*",
+    };
 }
