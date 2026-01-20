@@ -20,6 +20,9 @@ model User {
   @@index([userId])
 }
 
+enum BalanceType {
+  stars
+}
 model Balance {
   id       String      @id @default(auto()) @map("_id") @db.ObjectId
   userId   Int         @map("userId")
@@ -31,10 +34,19 @@ model Balance {
   @@index([userId])
 }
 
-enum BalanceType {
-  stars
+enum AuctionStatus {
+  active
+  ended
+}
+model Auction {
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  
 }
 
+enum ActionType {
+  balance
+  bet
+}
 model Action {
   id       String     @id @default(auto()) @map("_id") @db.ObjectId
   userId   Int        @map("userId")
@@ -46,7 +58,4 @@ model Action {
   @@index([userId])
 }
 
-enum ActionType {
-  balance
-  bet
-}
+
