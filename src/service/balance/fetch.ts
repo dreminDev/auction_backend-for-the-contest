@@ -8,8 +8,7 @@ export async function fetchBalanceByIdAndType(
     this: BalanceService,
     input: FetchBalanceIn
 ) {
-    const balance =
-        this.balanceRepo.fetchBalanceByIdAndType(input);
+    const balance = this.balanceRepo.fetchBalanceByIdAndType(input);
 
     return balance;
 }
@@ -18,8 +17,7 @@ export async function fetchBalancesByUserId(
     this: BalanceService,
     input: FetchBalancesByUserIdIn
 ) {
-    const balances =
-        this.balanceRepo.fetchBalancesByUserId(input);
+    const balances = this.balanceRepo.fetchBalancesByUserId(input);
 
     return balances;
 }

@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify";
 import type { UserService } from "../../../../service/user/service";
 import { fetchByUser } from "./fetch";
 
+export const httpUserPrefix = "/user";
 export class HttpUserController {
     protected app: FastifyInstance;
     protected userService: UserService;
@@ -20,7 +21,7 @@ export class HttpUserController {
                     this.fetchByUser(req, res)
                 );
             },
-            { prefix: "/user" }
+            { prefix: httpUserPrefix }
         );
     }
 }

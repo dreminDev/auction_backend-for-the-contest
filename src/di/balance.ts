@@ -9,9 +9,7 @@ export function balanceRepo(this: DI) {
 }
 
 export function balanceService(this: DI) {
-    const balanceService = new BalanceService(
-        this.BalanceRepo()
-    );
+    const balanceService = new BalanceService(this.BalanceRepo());
 
     return this.set("balanceService", balanceService);
 }

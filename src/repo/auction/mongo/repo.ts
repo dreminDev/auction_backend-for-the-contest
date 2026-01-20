@@ -1,13 +1,12 @@
-import type { AuctionRepo } from "../../repo/auction/mongo/repo";
-
+import type { PrismaClient } from "@prisma/client";
 import { createAuction } from "./create";
 import { fetchAuction, fetchAuctionListByStatus } from "./fetch";
 
-export class AuctionService {
-    protected auctionRepo: AuctionRepo;
+export class AuctionRepo {
+    protected db: PrismaClient;
 
-    constructor(auctionRepo: AuctionRepo) {
-        this.auctionRepo = auctionRepo;
+    constructor(db: PrismaClient) {
+        this.db = db;
     }
 
     createAuction = createAuction;

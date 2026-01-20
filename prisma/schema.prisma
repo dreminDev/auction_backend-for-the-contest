@@ -40,7 +40,18 @@ enum AuctionStatus {
 }
 model Auction {
   id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  status   AuctionStatus @default(active) @map("status")
 
+  roundCount Int @map("roundCount") 
+  roundDuration Int @map("roundDuration") 
+
+  roundStartTime DateTime @default(now()) @map("roundStartTime")
+  roundEndTime DateTime @map("roundEndTime") 
+
+  supplyCount Int @map("supplyCount")
+
+  addedAt  DateTime @default(now()) @map("addedAt")
+  endedAt  DateTime? @map("endedAt")
 }
 
 enum ActionType {

@@ -10,6 +10,9 @@ export async function httpServer(this: App) {
     const httpUserController = this.di.HttpUserController();
     await httpUserController.setup();
 
+    const httpAuctionController = this.di.HttpAuctionController();
+    await httpAuctionController.setup();
+
     try {
         await httpServer.ready();
 
@@ -24,8 +27,7 @@ export async function httpServer(this: App) {
     } catch (error) {
         this.di.logger.error({
             cause: error,
-            message:
-                "some error ocured while starting HTTP server",
+            message: "some error ocured while starting HTTP server",
         });
     }
 }

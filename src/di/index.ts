@@ -1,6 +1,12 @@
 import { logger } from "../../pkg/logger";
 import { config } from "../config";
+
 import { actionRepo, actionService } from "./action";
+import {
+    auctionRepo,
+    auctionService,
+    httpAuctionController,
+} from "./auction";
 import { balanceRepo, balanceService } from "./balance";
 import { database } from "./database";
 import { httpServer } from "./server";
@@ -29,6 +35,10 @@ export class DI {
 
     readonly ActionRepo = actionRepo;
     readonly ActionService = actionService;
+
+    readonly HttpAuctionController = httpAuctionController;
+    readonly AuctionRepo = auctionRepo;
+    readonly AuctionService = auctionService;
 
     constructor() {
         this.injections = new Map();

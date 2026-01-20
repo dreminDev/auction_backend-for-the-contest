@@ -7,6 +7,7 @@ import {
 
 import type { HttpMiddleware } from ".";
 import { ErrorUnauthorized } from "../../../error/server";
+import { httpUserPrefix } from "../handlers/user";
 
 export const authSym: unique symbol = Symbol("auth");
 export const userIdSym: unique symbol = Symbol("auth-user-id");
@@ -22,6 +23,10 @@ export async function httpAuthMiddleware(
     this: HttpMiddleware,
     req: FastifyRequest
 ) {
+    if (!req.url.includes(httpUserPrefix)) {
+        return;
+    }
+
     const authSign = req.headers.authorization;
     if (!authSign) {
         throw new ErrorUnauthorized();
