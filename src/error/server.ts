@@ -27,8 +27,8 @@ export class BadRequestError extends BaseError {
 }
 
 export class NotFoundError extends BaseError {
-    constructor(message = "bad request") {
+    constructor(message = "not found") {
         super(404, message);
-        this.name = BadRequestError.name;
+        this.name = NotFoundError.name;
     }
 }
