@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { z } from "zod";
+import { logger } from "../../pkg/logger";
 
 export const IS_DEV =
     process.env.NODE_ENV !== "production" && Boolean(process.env.NODE_ENV);
@@ -21,10 +22,10 @@ const envConfig = dotenv.config({
 });
 
 if (envConfig.error || !envConfig.parsed) {
-    console.error(
-        "some error ocured while parsing .env, please recheck and try again",
-        envConfig.error
-    );
+    logger.fatal({
+        cause: envConfig.error,
+        message: "some error ocured while parsing .env, please recheck and try again",
+    });
 
     process.exit(1);
 }
@@ -40,12 +41,12 @@ if (!parsed.success) {
         }
     });
 
-    console.error("validation error ocured for config file", {
-        is_valid_config: parsed.success,
-        err: errMessage,
+    logger.fatal({
+        cause: parsed.error,
+        message: "validation error ocured for config file",
     });
 
-    process.exit(1);
+    throw new Error("validation error ocured for config file", { cause: parsed.error });
 }
 
 export const config = {

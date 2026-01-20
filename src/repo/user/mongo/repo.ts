@@ -1,9 +1,9 @@
 import type { PrismaClient } from "@prisma/client";
 
 export class UserRepo {
-    db: PrismaClient;
+    readonly db: PrismaClient;
 
-    constructor(database: PrismaClient) {
-        this.db = database;
+    constructor(db: PrismaClient) {
+        this.db = db;
     }
 }
