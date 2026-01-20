@@ -4,8 +4,7 @@ import { z } from "zod";
 import { logger } from "../../pkg/logger";
 
 export const IS_DEV =
-    process.env.NODE_ENV !== "production" &&
-    Boolean(process.env.NODE_ENV);
+    process.env.NODE_ENV !== "production" && Boolean(process.env.NODE_ENV);
 
 const configValidator = z.object({
     ENV: z

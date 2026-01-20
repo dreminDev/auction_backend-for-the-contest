@@ -16,9 +16,7 @@ export async function fetchAuctionListByStatus(
 ) {
     const validated = validator.safeParse(req.query);
     if (!validated.success) {
-        return res
-            .status(400)
-            .send({ error: validated.error.message });
+        return res.status(400).send({ error: validated.error.message });
     }
 
     const out = await this.auctionService.fetchAuctionListByStatus(

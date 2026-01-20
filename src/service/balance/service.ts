@@ -1,8 +1,5 @@
 import type { BalanceRepo } from "../../repo/balance/mongo/repo";
-import {
-    fetchBalanceByIdAndType,
-    fetchBalancesByUserId,
-} from "./fetch";
+import { fetchBalanceByIdAndType, fetchBalancesByUserId } from "./fetch";
 
 export class BalanceService {
     protected balanceRepo: BalanceRepo;

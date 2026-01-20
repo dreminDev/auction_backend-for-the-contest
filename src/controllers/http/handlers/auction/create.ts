@@ -18,9 +18,7 @@ export async function createAuction(
 ) {
     const validated = validator.safeParse(req.body);
     if (!validated.success) {
-        return res
-            .status(400)
-            .send({ error: validated.error.message });
+        return res.status(400).send({ error: validated.error.message });
     }
 
     const input: CreateAuctionIn = {

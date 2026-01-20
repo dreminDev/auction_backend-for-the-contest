@@ -146,9 +146,17 @@ class TimeClass {
      * @returns Promise<void>
      */
     sleep(milliseconds: number): Promise<void> {
-        return new Promise((resolve) =>
-            setTimeout(resolve, milliseconds)
-        );
+        return new Promise((resolve) => setTimeout(resolve, milliseconds));
+    }
+
+    /**
+     * Get the difference between two dates in milliseconds
+     * @param date1 - date1
+     * @param date2 - date2
+     * @returns difference in milliseconds
+     */
+    diff(date1: Date, date2: Date): number {
+        return date1.getTime() - date2.getTime();
     }
 
     /**
