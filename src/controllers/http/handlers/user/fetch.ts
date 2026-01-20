@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 
 import type { HttpUserController } from ".";
-import { NotFoundError } from "../../../../error/server";
+import { NotFoundError } from "../../../../error/customError";
 import { userIdSym } from "../../middleware/auth";
 
 export async function fetchByUser(

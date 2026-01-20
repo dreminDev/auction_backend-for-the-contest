@@ -44,6 +44,7 @@ model Auction {
   status   AuctionStatus @default(active) @map("status")
 
   roundCount Int @map("roundCount") 
+  currentRound Int @default(0) @map("currentRound")
   roundDuration Int @map("roundDuration") 
 
   roundStartTime DateTime @default(now()) @map("roundStartTime")
@@ -63,6 +64,7 @@ model AuctionBet {
   userId   Int        @map("userId")
   auctionId String     @map("auctionId") 
   amount Int @map("amount")
+  round Int @map("round")
   addedAt  DateTime   @default(now()) @map("addedAt")
   metaData Json?      @default("{}") @map("metaData")
 
@@ -70,15 +72,29 @@ model AuctionBet {
   @@index([userId, auctionId])
 }
 
-model Gift {
+enum GiftType {
+  plush_pepe
+  plush_fox
+}
+model GiftCollection {
   id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  ownerId   Int    @default(0)    @map("ownerId")
-
-  
-
-  updatedAt DateTime   @default(now()) @map("updatedAt")
+  collection GiftType @map("collection")
+  supplyCount Int @map("supplyCount")
   addedAt  DateTime   @default(now()) @map("addedAt")
-  @@map("gifts")
+  @@map("gift_collections")
+  @@index([collection])
+}
+
+model GiftOwner {
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  giftId String @map("giftId")
+
+  ownerId Int @map("ownerId")
+  serialNumber Int @map("serialNumber")
+
+  addedAt  DateTime   @default(now()) @map("addedAt")
+  @@map("gift_owners")
+  @@index([ownerId, giftId])
 }
 
 enum ActionType {

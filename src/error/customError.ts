@@ -32,3 +32,10 @@ export class NotFoundError extends BaseError {
         this.name = NotFoundError.name;
     }
 }
+
+export class PaymentRequiredError extends BaseError {
+    constructor(message = "payment required") {
+        super(402, message);
+        this.name = PaymentRequiredError.name;
+    }
+}

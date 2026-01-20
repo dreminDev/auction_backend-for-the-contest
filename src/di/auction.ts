@@ -1,6 +1,6 @@
 import type { DI } from ".";
 import { HttpAuctionController } from "../controllers/http/handlers/auction";
-import { ActionBetRepo } from "../repo/actionBet/mongo/repo";
+import { ActionBetRepo } from "../repo/action_bet/mongo/repo";
 import { AuctionRepo } from "../repo/auction/mongo/repo";
 import { AuctionService } from "../service/auction/service";
 import { AuctionBidService } from "../service/bid/auction/service";

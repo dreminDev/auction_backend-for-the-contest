@@ -1,5 +1,4 @@
-import type { Balance } from "@prisma/client";
-
+import { NotFoundError } from "../../error/customError";
 import type { FetchUserIn } from "../../repo/user/dto/fetch";
 import type { FetchUserByIdOut } from "./dto/fetch";
 import type { UserService } from "./service";
@@ -16,10 +15,10 @@ export async function fetchUserById(
     ]);
 
     if (!user) {
-        throw new Error("User not found");
+        throw new NotFoundError("user not found");
     }
     if (balances.length === 0) {
-        throw new Error("Balances not found");
+        throw new NotFoundError("balances not found");
     }
 
     balances.forEach((balance: Record<string, any>) => {

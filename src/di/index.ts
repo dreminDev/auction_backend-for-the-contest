@@ -10,6 +10,7 @@ import {
 } from "./auction";
 import { balanceRepo, balanceService } from "./balance";
 import { database } from "./database";
+import { giftCollectionRepo, giftOwnerRepo } from "./gift";
 import { httpServer } from "./server";
 import {
     httpMiddleware,
@@ -43,6 +44,9 @@ export class DI {
     readonly ActionBetRepo = actionBetRepo;
     readonly AuctionService = auctionService;
     readonly AuctionBidService = auctionBidService;
+
+    readonly GiftOwnerRepo = giftOwnerRepo;
+    readonly GiftCollectionRepo = giftCollectionRepo;
 
     constructor() {
         this.injections = new Map();

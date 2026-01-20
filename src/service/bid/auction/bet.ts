@@ -2,6 +2,11 @@ import type { AuctionStatus, BalanceType } from "@prisma/client";
 
 import decimal from "../../../../pkg/decimal";
 import { time } from "../../../../pkg/time";
+import {
+    BadRequestError,
+    NotFoundError,
+    PaymentRequiredError,
+} from "../../../error/customError";
 import type { NewBetIn } from "./dto/bet";
 import type { AuctionBidService } from "./service";
 
@@ -17,21 +22,21 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
     ]);
 
     if (!auction) {
-        throw new Error("Auction not found");
+        throw new NotFoundError("auction not found");
     }
     if (auction.status !== "active") {
         if (auction.status === "ended") {
-            throw new Error("Auction is ended");
+            throw new BadRequestError("auction is ended");
         }
 
-        throw new Error("Auction is not active");
+        throw new BadRequestError("auction is not active");
     }
 
     if (!userInfoBalance) {
-        throw new Error("Balance not found");
+        throw new NotFoundError("balance not found");
     }
     if (userInfoBalance.balance < input.amount) {
-        throw new Error("Insufficient balance");
+        throw new PaymentRequiredError("insufficient balance");
     }
 
     const now = time.now();
@@ -39,7 +44,7 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
     const tenSecondsInMs = time.second(10);
     // Если время истекло, отказываем в ставке, аукцион завершается
     if (timeUntilEnd <= 0) {
-        throw new Error("Auction round time has expired");
+        throw new BadRequestError("auction round time has expired");
     }
 
     // Если осталось менее 10 секунд до конца раунда, продлеваем на 10 секунд от текущего момента
@@ -76,6 +81,7 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
                 auctionId: auction.id,
                 amount: input.amount,
                 userId: input.userId,
+                round: auction.currentRound,
                 addedAt: time.now(),
                 metaData: {
                     balanceType: input.balanceType,

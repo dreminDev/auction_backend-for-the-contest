@@ -1,4 +1,4 @@
-import type { FetchAuctionBetIn } from "../../../repo/actionBet/dto/fetch";
+import type { FetchAuctionBetIn } from "../../../repo/action_bet/dto/fetch";
 import type { AuctionBidService } from "./service";
 
 export async function fetchAuctionLastBetByAuctionId(
@@ -49,7 +49,7 @@ export async function fetchAuctionById(
 
     actionBetList.forEach((bet: Record<string, any>) => {
         delete bet.auctionId;
-        delete bet.addedAt
+        delete bet.addedAt;
         delete bet.metaData;
     });
 

@@ -1,4 +1,4 @@
-import type { ActionBetRepo } from "../../../repo/actionBet/mongo/repo";
+import type { ActionBetRepo } from "../../../repo/action_bet/mongo/repo";
 import type { BalanceRepo } from "../../../repo/balance/mongo/repo";
 import type { ActionService } from "../../action/service";
 import type { AuctionService } from "../../auction/service";
