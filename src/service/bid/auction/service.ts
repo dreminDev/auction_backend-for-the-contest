@@ -1,4 +1,6 @@
 import type { ActionBetRepo } from "../../../repo/action_bet/mongo/repo";
+import type { ActionRepo } from "../../../repo/action/mongo/repo";
+import type { AuctionRepo } from "../../../repo/auction/mongo/repo";
 import type { BalanceRepo } from "../../../repo/balance/mongo/repo";
 import type { ActionService } from "../../action/service";
 import type { AuctionService } from "../../auction/service";
@@ -18,6 +20,8 @@ export class AuctionBidService {
     protected balanceService: BalanceService;
     protected actionService: ActionService;
     protected balanceRepo: BalanceRepo;
+    protected auctionRepo: AuctionRepo;
+    protected actionRepo: ActionRepo;
 
     constructor(
         userService: UserService,
@@ -25,7 +29,9 @@ export class AuctionBidService {
         balanceService: BalanceService,
         actionService: ActionService,
         balanceRepo: BalanceRepo,
-        actionBetRepo: ActionBetRepo
+        actionBetRepo: ActionBetRepo,
+        auctionRepo: AuctionRepo,
+        actionRepo: ActionRepo
     ) {
         this.userService = userService;
         this.auctionService = auctionService;
@@ -33,6 +39,8 @@ export class AuctionBidService {
         this.actionService = actionService;
         this.balanceRepo = balanceRepo;
         this.actionBetRepo = actionBetRepo;
+        this.auctionRepo = auctionRepo;
+        this.actionRepo = actionRepo;
     }
     fetchAuctionLastBetByAuctionId = fetchAuctionLastBetByAuctionId;
     fetchActionBetListByAuctionId = fetchActionBetListByAuctionId;

@@ -1,3 +1,4 @@
+import { getTxClient, type TxClient } from "../../utils/tx";
 import type {
     FetchBalanceIn,
     FetchBalancesByUserIdIn,
@@ -6,9 +7,12 @@ import type { BalanceRepo } from "./repo";
 
 export async function fetchBalanceByIdAndType(
     this: BalanceRepo,
-    input: FetchBalanceIn
+    input: FetchBalanceIn,
+    tx?: TxClient
 ) {
-    const balance = await this.db.balance.findFirst({
+    const client = getTxClient(this.db, tx);
+    
+    const balance = await client.balance.findFirst({
         where: {
             userId: input.userId,
             type: input.type,
@@ -20,9 +24,12 @@ export async function fetchBalanceByIdAndType(
 
 export async function fetchBalancesByUserId(
     this: BalanceRepo,
-    input: FetchBalancesByUserIdIn
+    input: FetchBalancesByUserIdIn,
+    tx?: TxClient
 ) {
-    const balances = await this.db.balance.findMany({
+    const client = getTxClient(this.db, tx);
+    
+    const balances = await client.balance.findMany({
         where: {
             userId: input.userId,
         },

@@ -1,11 +1,15 @@
+import { getTxClient, type TxClient } from "../../utils/tx";
 import type { CreateAuctionIn } from "../dto/create";
 import type { AuctionRepo } from "./repo";
 
 export async function createAuction(
     this: AuctionRepo,
-    input: CreateAuctionIn
+    input: CreateAuctionIn,
+    tx?: TxClient
 ) {
-    const newAuction = await this.db.auction.create({
+    const client = getTxClient(this.db, tx);
+    
+    const newAuction = await client.auction.create({
         data: input,
     });
 

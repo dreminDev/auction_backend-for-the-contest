@@ -1,11 +1,15 @@
+import { getTxClient, type TxClient } from "../../utils/tx";
 import type { CreateActionIn } from "../dto/create";
 import type { ActionRepo } from "./repo";
 
 export async function createAction(
     this: ActionRepo,
-    input: CreateActionIn
+    input: CreateActionIn,
+    tx?: TxClient
 ) {
-    const newAction = await this.db.action.create({
+    const client = getTxClient(this.db, tx);
+
+    const newAction = await client.action.create({
         data: input,
     });
 

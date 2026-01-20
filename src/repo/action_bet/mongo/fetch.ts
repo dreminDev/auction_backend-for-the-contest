@@ -1,11 +1,15 @@
+import { getTxClient, type TxClient } from "../../utils/tx";
 import type { FetchAuctionBetIn } from "../dto/fetch";
 import type { ActionBetRepo } from "./repo";
 
 export async function fetchAuctionBets(
     this: ActionBetRepo,
-    input: FetchAuctionBetIn
+    input: FetchAuctionBetIn,
+    tx?: TxClient
 ) {
-    const auctionBets = await this.db.auctionBet.findMany({
+    const client = getTxClient(this.db, tx);
+    
+    const auctionBets = await client.auctionBet.findMany({
         where: { auctionId: input.auctionId },
         orderBy: {
             amount: "desc",
@@ -19,9 +23,12 @@ export async function fetchAuctionBets(
 
 export async function fetchAuctionLastBetByAuctionId(
     this: ActionBetRepo,
-    auctionId: string
+    auctionId: string,
+    tx?: TxClient
 ) {
-    const auctionLastBet = await this.db.auctionBet.findFirst({
+    const client = getTxClient(this.db, tx);
+    
+    const auctionLastBet = await client.auctionBet.findFirst({
         where: { auctionId: auctionId },
         orderBy: { addedAt: "desc" },
     });

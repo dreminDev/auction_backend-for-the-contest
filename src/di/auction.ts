@@ -40,7 +40,9 @@ export function auctionBidService(this: DI) {
         this.BalanceService(),
         this.ActionService(),
         this.BalanceRepo(),
-        this.ActionBetRepo()
+        this.ActionBetRepo(),
+        this.AuctionRepo(),
+        this.ActionRepo()
     );
 
     return this.set("auctionBidService", auctionBidService);

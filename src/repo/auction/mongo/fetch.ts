@@ -1,3 +1,4 @@
+import { getTxClient, type TxClient } from "../../utils/tx";
 import type {
     FetchAuctionIn,
     FetchAuctionListByStatusIn,
@@ -6,9 +7,12 @@ import type { AuctionRepo } from "./repo";
 
 export async function fetchAuction(
     this: AuctionRepo,
-    input: FetchAuctionIn
+    input: FetchAuctionIn,
+    tx?: TxClient
 ) {
-    const auction = await this.db.auction.findFirst({
+    const client = getTxClient(this.db, tx);
+    
+    const auction = await client.auction.findFirst({
         where: input,
     });
 
@@ -17,9 +21,12 @@ export async function fetchAuction(
 
 export async function fetchAuctionListByStatus(
     this: AuctionRepo,
-    input: FetchAuctionListByStatusIn
+    input: FetchAuctionListByStatusIn,
+    tx?: TxClient
 ) {
-    const auctionList = await this.db.auction.findMany({
+    const client = getTxClient(this.db, tx);
+    
+    const auctionList = await client.auction.findMany({
         where: {
             status: input,
         },

@@ -1,5 +1,6 @@
 import type { PrismaClient } from "@prisma/client";
 
+import { createWithTx, type TxClient } from "../../utils/tx";
 import { createAction } from "./create";
 
 export class ActionRepo {
@@ -10,4 +11,8 @@ export class ActionRepo {
     }
 
     createAction = createAction;
+
+    withTx(tx: TxClient): this {
+        return createWithTx(this, tx) as this;
+    }
 }
