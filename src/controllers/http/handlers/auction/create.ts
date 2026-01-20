@@ -2,6 +2,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 
 import type { HttpAuctionController } from ".";
+import { time } from "../../../../../pkg/time";
 import type { CreateAuctionIn } from "./dto/create";
 
 const validator = z.object({
@@ -25,10 +26,8 @@ export async function createAuction(
     const input: CreateAuctionIn = {
         roundCount: validated.data.roundCount,
         roundDuration: validated.data.roundDuration,
-        roundStartTime: new Date(),
-        roundEndTime: new Date(
-            Date.now() + validated.data.roundDuration * 1000
-        ),
+        roundStartTime: time.now(),
+        roundEndTime: time.addNow(validated.data.roundDuration),
         supplyCount: validated.data.supplyCount,
     };
 
