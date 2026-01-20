@@ -1,6 +1,7 @@
 import type { BalanceRepo } from "../../repo/balance/mongo/repo";
 import type { UserRepo } from "../../repo/user/mongo/repo";
 import type { BalanceService } from "../balance/service";
+import { fetchUserById } from "./fetch";
 import { registerUser } from "./register";
 
 export class UserService {
@@ -19,4 +20,5 @@ export class UserService {
     }
 
     registerUser = registerUser;
+    fetchUserById = fetchUserById;
 }

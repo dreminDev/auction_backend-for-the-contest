@@ -1,3 +1,6 @@
-import type { User } from "@prisma/client";
+import type { Balance, User } from "@prisma/client";
 
-export type FetchUserByIdOut = User
+export type FetchUserByIdOut = {
+    user: User;
+    balances: Balance[];
+};

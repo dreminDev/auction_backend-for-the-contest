@@ -7,11 +7,24 @@ export async function fetchUserById(
     this: UserService,
     input: FetchUserIn
 ): Promise<FetchUserByIdOut> {
-    const user = await this.userRepo.fetchUserById(input);
+    const [user, balances] = await Promise.all([
+        this.userRepo.fetchUserById(input),
+        this.balanceService.fetchBalancesByUserId({
+            userId: input.userId,
+        }),
+    ]);
 
     if (!user) {
         throw new Error("User not found");
     }
+    if (balances.length === 0) {
+        throw new Error("Balances not found");
+    }
 
-    return user;
+    const out: FetchUserByIdOut = {
+        user: user,
+        balances: balances,
+    };
+
+    return out;
 }
