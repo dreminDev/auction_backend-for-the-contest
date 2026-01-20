@@ -1,24 +1,20 @@
-import type {
-    RegisterUserIn,
-    RegisterUserOut,
-} from "./dto/register";
+import type { CreateUserIn } from "../../repo/user/dto/create";
+import type { RegisterUserOut } from "./dto/register";
 import type { UserService } from "./service";
 
 export async function registerUser(
     this: UserService,
-    input: RegisterUserIn
+    input: CreateUserIn
 ): Promise<RegisterUserOut> {
-    const [fetchUser, fetchUserBalance] = await Promise.all(
-        [
-            this.userRepo.fetchUserById({
-                userId: input.userId,
-            }),
-            this.balanceService.fetchBalanceByIdAndType({
-                userId: input.userId,
-                type: "stars",
-            }),
-        ]
-    );
+    const [fetchUser, fetchUserBalance] = await Promise.all([
+        this.userRepo.fetchUserById({
+            userId: input.userId,
+        }),
+        this.balanceService.fetchBalanceByIdAndType({
+            userId: input.userId,
+            type: "stars",
+        }),
+    ]);
 
     const out: RegisterUserOut = {
         isNewUser: false,
@@ -38,26 +34,24 @@ export async function registerUser(
         out.isNewUser = true;
         out.user = await this.userRepo.createUser({
             userId: input.userId,
-            username: null,
-            first_name: null,
-            last_name: null,
+            username: input.username ?? null,
+            first_name: input.first_name ?? null,
+            last_name: input.last_name ?? null,
         });
     }
 
     // дефолтный баланс для пользователя, поэтому создаем его вместе с регистрацией.
     if (!fetchUserBalance) {
         // так как мы не используем уникальность баланса, т.к это физически невозможно ограничить на уровне бд, мы используем транзакцию, дабы избежать race condition.
-        await this.balanceRepo.db.$transaction(
-            async (tx) => {
-                out.balance = await tx.balance.create({
-                    data: {
-                        userId: input.userId,
-                        type: "stars",
-                        balance: 0,
-                    },
-                });
-            }
-        );
+        await this.balanceRepo.db.$transaction(async (tx) => {
+            out.balance = await tx.balance.create({
+                data: {
+                    userId: input.userId,
+                    type: "stars",
+                    balance: 0,
+                },
+            });
+        });
     }
 
     // собираем статистику действий пользователя для метрик бизнеса/графаны

@@ -4,16 +4,22 @@ import { config } from "../config";
 export async function httpServer(this: App) {
     const httpServer = this.di.HttpServer();
 
+    const httpMiddleware = this.di.HttpMiddleware();
+    await httpMiddleware.setup();
+
+    const httpUserController = this.di.HttpUserController();
+    await httpUserController.setup();
+
     try {
         await httpServer.ready();
 
         await httpServer.listen({
-            host: config.HTTP_SERVER_HOST,
-            port: config.HTTP_SERVER_PORT,
+            host: this.di.config.HTTP_SERVER_HOST,
+            port: this.di.config.HTTP_SERVER_PORT,
         });
 
         this.di.logger.info(
-            `HTTP server is running on ${config.HTTP_SERVER_HOST}:${config.HTTP_SERVER_PORT}`
+            `HTTP server is running on ${this.di.config.HTTP_SERVER_HOST}:${this.di.config.HTTP_SERVER_PORT}`
         );
     } catch (error) {
         this.di.logger.error({

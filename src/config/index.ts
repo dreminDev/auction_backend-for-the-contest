@@ -16,10 +16,7 @@ const configValidator = z.object({
     MONGO_NAME: z.string(),
 
     HTTP_SERVER_HOST: z.string().default("0.0.0.0"),
-    HTTP_SERVER_PORT: z
-        .string()
-        .transform(Number)
-        .default(5000),
+    HTTP_SERVER_PORT: z.string().transform(Number).default(5000),
 });
 
 const envConfig = dotenv.config({
@@ -52,12 +49,9 @@ if (!parsed.success) {
         message: "validation error ocured for config file",
     });
 
-    throw new Error(
-        "validation error ocured for config file",
-        {
-            cause: parsed.error,
-        }
-    );
+    throw new Error("validation error ocured for config file", {
+        cause: parsed.error,
+    });
 }
 
 export const config = {

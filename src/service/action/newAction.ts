@@ -5,8 +5,7 @@ export async function newAction(
     this: ActionService,
     input: CreateActionIn
 ) {
-    const newAction =
-        await this.actionRepo.createAction(input);
+    const newAction = await this.actionRepo.createAction(input);
 
     return newAction;
 }

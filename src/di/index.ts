@@ -1,9 +1,11 @@
 import { logger } from "../../pkg/logger";
+import { config } from "../config";
 import { actionRepo, actionService } from "./action";
 import { balanceRepo, balanceService } from "./balance";
 import { database } from "./database";
 import { httpServer } from "./server";
 import {
+    httpMiddleware,
     httpUserController,
     userRepo,
     userService,
@@ -12,11 +14,13 @@ export class DI {
     protected injections: Map<String, unknown> = new Map();
 
     readonly logger = logger;
+    readonly config = config;
 
     readonly Database = database;
     readonly HttpServer = httpServer;
 
     readonly HttpUserController = httpUserController;
+    readonly HttpMiddleware = httpMiddleware;
     readonly UserRepo = userRepo;
     readonly UserService = userService;
 
@@ -25,7 +29,7 @@ export class DI {
 
     readonly ActionRepo = actionRepo;
     readonly ActionService = actionService;
-    
+
     constructor() {
         this.injections = new Map();
     }
