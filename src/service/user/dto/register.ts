@@ -1,4 +1,4 @@
-import type { User, Balance } from "@prisma/client";
+import type { Balance, User } from "@prisma/client";
 
 export type RegisterUserOut = {
     isNewUser: boolean;

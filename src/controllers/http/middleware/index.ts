@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify";
+
 import type { UserService } from "../../../service/user/service";
 import { httpAuthMiddleware } from "./auth";
 

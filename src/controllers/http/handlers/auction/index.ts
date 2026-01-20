@@ -1,11 +1,8 @@
-import type {
-    FastifyInstance,
-    FastifyReply,
-    FastifyRequest,
-} from "fastify";
+import type { FastifyInstance, FastifyRequest } from "fastify";
+
 import type { AuctionService } from "../../../../service/auction/service";
-import { fetchAuctionListByStatus } from "./fetch";
 import type { FetchAuctionListByStatusIn } from "./dto/fetch";
+import { fetchAuctionListByStatus } from "./fetch";
 
 export const httpAuctionPrefix = "/auction";
 

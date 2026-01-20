@@ -1,9 +1,9 @@
-import { type FastifyRequest } from "fastify";
 import {
-    type InitData,
     parse,
     validate,
+    type InitData,
 } from "@telegram-apps/init-data-node";
+import { type FastifyRequest } from "fastify";
 
 import type { HttpMiddleware } from ".";
 import { ErrorUnauthorized } from "../../../error/server";

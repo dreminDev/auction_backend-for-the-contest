@@ -1,9 +1,8 @@
-import type { AuctionRepo } from "./repo";
-
 import type {
     FetchAuctionIn,
     FetchAuctionListByStatusIn,
 } from "../dto/fetch";
+import type { AuctionRepo } from "./repo";
 
 export async function fetchAuction(
     this: AuctionRepo,

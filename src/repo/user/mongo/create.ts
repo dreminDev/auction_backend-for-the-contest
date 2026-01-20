@@ -1,7 +1,6 @@
-import type { UserRepo } from "./repo";
-
 import type { CreateUserIn } from "../dto/create";
 import type { FetchUserOut } from "../dto/fetch";
+import type { UserRepo } from "./repo";
 
 export async function createUser(
     this: UserRepo,

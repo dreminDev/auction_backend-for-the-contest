@@ -1,6 +1,5 @@
 import { logger } from "../../pkg/logger";
 import { config } from "../config";
-
 import { actionRepo, actionService } from "./action";
 import {
     auctionRepo,
@@ -16,6 +15,7 @@ import {
     userRepo,
     userService,
 } from "./user";
+
 export class DI {
     protected injections: Map<String, unknown> = new Map();
 

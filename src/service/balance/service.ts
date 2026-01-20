@@ -1,5 +1,4 @@
 import type { BalanceRepo } from "../../repo/balance/mongo/repo";
-
 import {
     fetchBalanceByIdAndType,
     fetchBalancesByUserId,

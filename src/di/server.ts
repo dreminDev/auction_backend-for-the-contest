@@ -1,6 +1,7 @@
-import type { DI } from ".";
-import Fastify, { type FastifyInstance } from "fastify";
 import fastifyCors from "@fastify/cors";
+import Fastify, { type FastifyInstance } from "fastify";
+
+import type { DI } from ".";
 import { config } from "../config";
 import { httpCorsConfig } from "../config/server";
 

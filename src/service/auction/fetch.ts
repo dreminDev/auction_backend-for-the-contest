@@ -1,8 +1,8 @@
-import type { AuctionService } from "./service";
 import type {
     FetchAuctionIn,
     FetchAuctionListByStatusIn,
 } from "../../repo/auction/dto/fetch";
+import type { AuctionService } from "./service";
 
 export async function fetchAuction(
     this: AuctionService,

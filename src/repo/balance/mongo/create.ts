@@ -1,5 +1,5 @@
-import type { BalanceRepo } from "./repo";
 import type { CreateBalanceIn } from "../dto/create";
+import type { BalanceRepo } from "./repo";
 
 export async function createBalance(
     this: BalanceRepo,

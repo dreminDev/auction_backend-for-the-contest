@@ -1,5 +1,6 @@
-import type { DI } from ".";
 import { PrismaClient } from "@prisma/client";
+
+import type { DI } from ".";
 
 export function database(this: DI) {
     // config load from prisma.config.ts

@@ -1,9 +1,8 @@
-import { z } from "zod";
-import type { FastifyRequest, FastifyReply } from "fastify";
 import { AuctionStatus } from "@prisma/client";
+import type { FastifyReply, FastifyRequest } from "fastify";
+import { z } from "zod";
 
 import type { HttpAuctionController } from ".";
-
 import type { FetchAuctionListByStatusIn } from "./dto/fetch";
 
 const validator = z.object({

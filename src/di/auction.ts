@@ -1,5 +1,4 @@
 import type { DI } from ".";
-
 import { HttpAuctionController } from "../controllers/http/handlers/auction";
 import { AuctionRepo } from "../repo/auction/mongo/repo";
 import { AuctionService } from "../service/auction/service";
