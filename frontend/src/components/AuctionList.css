@@ -7,9 +7,15 @@
 .page-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 24px;
   flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
 }
 
@@ -18,6 +24,42 @@
   font-size: 32px;
   font-weight: 600;
   margin: 0;
+}
+
+.status-tabs {
+  display: flex;
+  gap: 8px;
+  background: #212121;
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid #2c2c2e;
+}
+
+.status-tab {
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: #8e8e93;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.status-tab:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.status-tab.active {
+  background: #667eea;
+  color: #ffffff;
+}
+
+.status-tab.active:hover {
+  background: #5568d3;
 }
 
 .balance-card {
@@ -101,6 +143,11 @@
 .auction-status.active {
   background: rgba(52, 199, 89, 0.2);
   color: #34c759;
+}
+
+.auction-status.ended {
+  background: rgba(142, 142, 147, 0.2);
+  color: #8e8e93;
 }
 
 .auction-round {

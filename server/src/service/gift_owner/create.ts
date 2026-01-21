@@ -1,6 +1,5 @@
 import { NotFoundError, OutOfStockError } from "../../error/customError";
 import type { CreateGiftOwnerIn } from "../../repo/gift_owner/dto/create";
-import type { TxClient } from "../../repo/utils/tx";
 import type { CreateGiftOwnerUniqueIn } from "./dto/create";
 import type { GiftOwnerService } from "./service";
 

@@ -10,6 +10,7 @@ export function AuctionList() {
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
   const [user, setUser] = useState<User | null>(null);
+  const [statusFilter, setStatusFilter] = useState<'active' | 'ended'>('active');
   const navigate = useNavigate();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -22,14 +23,32 @@ export function AuctionList() {
     }
   }, []);
 
+  const loadAuctions = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await apiClient.getAuctions(statusFilter);
+      setAuctions(data);
+      setError('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ошибка загрузки аукционов');
+    } finally {
+      setLoading(false);
+    }
+  }, [statusFilter]);
+
+  // Загружаем аукционы при изменении фильтра
+  useEffect(() => {
+    loadAuctions();
+  }, [loadAuctions]);
+
+  // Настройка интервала для обновления времени и данных
   useEffect(() => {
     const userId = apiClient.getUserId();
     if (userId) {
       loadUserBalance();
     }
-    loadAuctions();
     
-    // Обновляем время каждую секунду для обновления таймеров
+    // Обновляем время каждую секунду для обновления таймеров (только для активных аукционов)
     intervalRef.current = setInterval(() => {
       setCurrentTime(new Date());
       // Обновляем баланс каждую секунду
@@ -45,18 +64,20 @@ export function AuctionList() {
     };
   }, [loadUserBalance]);
 
-  const loadAuctions = async () => {
-    try {
-      setLoading(true);
-      const data = await apiClient.getAuctions('active');
-      setAuctions(data);
-      setError('');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ошибка загрузки аукционов');
-    } finally {
-      setLoading(false);
+  // Отдельный интервал для обновления активных аукционов
+  useEffect(() => {
+    if (statusFilter !== 'active') {
+      return;
     }
-  };
+
+    const updateInterval = setInterval(() => {
+      loadAuctions();
+    }, 1000);
+
+    return () => {
+      clearInterval(updateInterval);
+    };
+  }, [statusFilter, loadAuctions]);
 
   const formatTime = (dateString: string) => {
     try {
@@ -95,10 +116,28 @@ export function AuctionList() {
     );
   }
 
+  const isActive = statusFilter === 'active';
+
   return (
     <div className="auction-list-container">
       <div className="page-header">
-        <h1 className="page-title">Активные аукционы</h1>
+        <div className="header-left">
+          <h1 className="page-title">Аукционы</h1>
+          <div className="status-tabs">
+            <button
+              className={`status-tab ${statusFilter === 'active' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('active')}
+            >
+              Активные
+            </button>
+            <button
+              className={`status-tab ${statusFilter === 'ended' ? 'active' : ''}`}
+              onClick={() => setStatusFilter('ended')}
+            >
+              Завершенные
+            </button>
+          </div>
+        </div>
         {user && user.balances && user.balances.length > 0 && (
           <div className="balance-card">
             <div className="balance-label">Ваш баланс</div>
@@ -119,7 +158,9 @@ export function AuctionList() {
         )}
       </div>
       {auctions.length === 0 ? (
-        <div className="empty-state">Нет активных аукционов</div>
+        <div className="empty-state">
+          {isActive ? 'Нет активных аукционов' : 'Нет завершенных аукционов'}
+        </div>
       ) : (
         <div className="auction-grid">
           {auctions.map((auction) => (
@@ -129,17 +170,41 @@ export function AuctionList() {
               onClick={() => navigate(`/auction/${auction.id}`)}
             >
               <div className="auction-header">
-                <span className="auction-status active">Активен</span>
+                <span className={`auction-status ${auction.status === 'active' ? 'active' : 'ended'}`}>
+                  {auction.status === 'active' ? 'Активен' : 'Завершен'}
+                </span>
                 <span className="auction-round">Раунд {auction.currentRound}/{auction.roundCount}</span>
               </div>
               <div className="auction-info">
-                <div className="auction-time">
-                  <span className="time-label">До конца раунда:</span>
-                  <span className="time-value">{formatTime(auction.roundEndTime)}</span>
-                </div>
-                <div className="auction-supply">
-                  Подарков: {auction.supplyCount}
-                </div>
+                {auction.status === 'active' ? (
+                  <>
+                    <div className="auction-time">
+                      <span className="time-label">До конца раунда:</span>
+                      <span className="time-value">{formatTime(auction.roundEndTime)}</span>
+                    </div>
+                    <div className="auction-supply">
+                      Подарков: {auction.supplyCount}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="auction-time">
+                      <span className="time-label">Завершен:</span>
+                      <span className="time-value">
+                        {auction.endedAt ? new Date(auction.endedAt).toLocaleDateString('ru-RU', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        }) : '—'}
+                      </span>
+                    </div>
+                    <div className="auction-supply">
+                      Подарков: {auction.supplyCount}
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           ))}
