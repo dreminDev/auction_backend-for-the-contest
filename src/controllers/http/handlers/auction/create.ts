@@ -9,6 +9,7 @@ const validator = z.object({
     roundCount: z.number().min(1).max(100),
     roundDuration: z.number().min(5_000),
     supplyCount: z.number().min(1),
+    giftCollectionId: z.string(),
 });
 
 export async function createAuction(
@@ -25,6 +26,7 @@ export async function createAuction(
         roundCount: validated.data.roundCount,
         roundDuration: validated.data.roundDuration,
         roundStartTime: time.now(),
+        giftCollectionId: validated.data.giftCollectionId,
         roundEndTime: time.addNow(validated.data.roundDuration),
         supplyCount: validated.data.supplyCount,
     };

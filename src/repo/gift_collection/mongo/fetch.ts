@@ -3,6 +3,12 @@ import type { Prisma } from "@prisma/client";
 import type { FetchGiftCollectionIn } from "../dto/fetch";
 import type { GiftCollectionRepo } from "./repo";
 
+export async function fetchGiftsCollection(this: GiftCollectionRepo) {
+    const giftCollections = await this.db.giftCollection.findMany();
+
+    return giftCollections;
+}
+
 export async function fetchGiftCollection(
     this: GiftCollectionRepo,
     input: FetchGiftCollectionIn

@@ -1,4 +1,7 @@
-import type { FetchAuctionBetIn } from "../../../repo/action_bet/dto/fetch";
+import type {
+    FetchAuctionBetIn,
+    FetchUserBetsByAuctionIdAndUserIdIn,
+} from "../../../repo/action_bet/dto/fetch";
 import type { AuctionBidService } from "./service";
 
 export async function fetchAuctionLastBetByAuctionId(
@@ -19,15 +22,7 @@ export async function fetchActionBetListByAuctionId(
     this: AuctionBidService,
     input: FetchAuctionBetIn
 ) {
-    if (input.limit <= 0) {
-        input.limit = 10;
-    }
-
-    const actionBetList = await this.actionBetRepo.fetchAuctionBets({
-        auctionId: input.auctionId,
-        limit: input.limit,
-        offset: input.offset,
-    });
+    const actionBetList = await this.actionBetRepo.fetchAuctionBets(input);
 
     return actionBetList;
 }
@@ -57,4 +52,14 @@ export async function fetchAuctionById(
         auction,
         actionBetList,
     };
+}
+
+export async function fetchUserBetsByAuctionIdAndUserId(
+    this: AuctionBidService,
+    input: FetchUserBetsByAuctionIdAndUserIdIn
+) {
+    const userBets =
+        await this.actionBetRepo.fetchUserBetsByAuctionIdAndUserId(input);
+
+    return userBets;
 }

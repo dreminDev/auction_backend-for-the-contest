@@ -9,13 +9,17 @@ import type { NewBetIn } from "./dto/bet";
 import type { AuctionBidService } from "./service";
 
 export async function newBet(this: AuctionBidService, input: NewBetIn) {
-    const [auction, userInfoBalance] = await Promise.all([
+    const [auction, userInfoBalance, userBets] = await Promise.all([
         this.auctionService.fetchAuction({
             id: input.auctionId,
         }),
         this.balanceService.fetchBalanceByIdAndType({
             userId: input.userId,
             type: input.balanceType,
+        }),
+        this.fetchUserBetsByAuctionIdAndUserId({
+            auctionId: input.auctionId,
+            userId: input.userId,
         }),
     ]);
 
@@ -66,18 +70,36 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
             roundEndTime: newRoundEndTime,
         });
 
-        await this.actionBetRepo.withTx(tx).createAuctionBet({
-            auctionId: auction.id,
-            amount: input.amount,
-            userId: input.userId,
-            round: auction.currentRound,
-            addedAt: time.now(),
-            metaData: {
-                balanceType: input.balanceType,
-                oldBalance: userInfoBalance.balance,
-                newBalance: newBalance,
-            },
-        });
+        if (userBets) {
+            const newBetAmount = input.amount + userBets.amount;
+            const oldBalance = new decimal(
+                (userBets.metaData as any).oldBalance
+            ).toNumber();
+
+            await this.actionBetRepo.withTx(tx).updateAuctionBet({
+                id: userBets.id,
+                amount: newBetAmount,
+                round: auction.currentRound,
+                metaData: {
+                    oldBalance: oldBalance,
+                    newBalance: newBalance,
+                    balanceType: input.balanceType,
+                },
+            });
+        } else {
+            await this.actionBetRepo.withTx(tx).createAuctionBet({
+                auctionId: auction.id,
+                amount: input.amount,
+                userId: input.userId,
+                round: auction.currentRound,
+                addedAt: time.now(),
+                metaData: {
+                    oldBalance: userInfoBalance.balance,
+                    newBalance: newBalance,
+                    balanceType: input.balanceType,
+                },
+            });
+        }
 
         await this.actionRepo.withTx(tx).createAction({
             userId: input.userId,

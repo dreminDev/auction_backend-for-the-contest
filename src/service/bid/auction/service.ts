@@ -11,7 +11,10 @@ import {
     fetchActionBetListByAuctionId,
     fetchAuctionById,
     fetchAuctionLastBetByAuctionId,
+    fetchUserBetsByAuctionIdAndUserId,
 } from "./fetch";
+import { returnBetsBalance } from "./return";
+import { updateBetsToNextRound } from "./update_round";
 
 export class AuctionBidService {
     protected userService: UserService;
@@ -44,6 +47,10 @@ export class AuctionBidService {
     }
     fetchAuctionLastBetByAuctionId = fetchAuctionLastBetByAuctionId;
     fetchActionBetListByAuctionId = fetchActionBetListByAuctionId;
+    fetchUserBetsByAuctionIdAndUserId = fetchUserBetsByAuctionIdAndUserId;
     fetchAuctionById = fetchAuctionById;
+
     newBet = newBet;
+    returnBetsBalance = returnBetsBalance;
+    updateBetsToNextRound = updateBetsToNextRound;
 }

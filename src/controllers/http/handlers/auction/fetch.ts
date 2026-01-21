@@ -30,8 +30,8 @@ export async function fetchAuctionListByStatus(
 
 const fetchAuctionByIdValidator = z.object({
     auctionId: z.string(),
-    limit: z.number().optional(),
-    offset: z.number().optional(),
+    limit: z.number().optional().default(10),
+    offset: z.number().optional().default(0),
 });
 
 export async function fetchAuctionById(
@@ -44,10 +44,16 @@ export async function fetchAuctionById(
         return res.status(400).send({ error: validated.error.issues });
     }
 
+    if (validated.data.limit && validated.data.limit >= 0) {
+        return res
+            .status(400)
+            .send({ error: "limit must be less than 10" });
+    }
+
     const out = await this.auctionBidService.fetchAuctionById({
         auctionId: validated.data.auctionId,
-        limit: validated.data.limit ?? 10,
-        offset: validated.data.offset ?? 0,
+        limit: validated.data.limit,
+        offset: validated.data.offset,
     });
 
     res.send(out);

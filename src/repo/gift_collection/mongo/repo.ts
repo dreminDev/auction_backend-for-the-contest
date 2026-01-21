@@ -1,6 +1,10 @@
 import type { PrismaClient } from "@prisma/client";
 
-import { fetchGiftCollection, fetchGiftCollections } from "./fetch";
+import {
+    fetchGiftCollection,
+    fetchGiftCollections,
+    fetchGiftsCollection,
+} from "./fetch";
 
 export class GiftCollectionRepo {
     protected db: PrismaClient;
@@ -9,6 +13,7 @@ export class GiftCollectionRepo {
         this.db = db;
     }
 
+    fetchGiftsCollection = fetchGiftsCollection;
     fetchGiftCollection = fetchGiftCollection;
     fetchGiftCollections = fetchGiftCollections;
 }

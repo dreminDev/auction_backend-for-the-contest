@@ -1,5 +1,9 @@
 import type { GiftCollectionRepo } from "../../repo/gift_collection/mongo/repo";
-import { fetchGiftCollection, fetchGiftCollections } from "./fetch";
+import {
+    fetchGiftCollection,
+    fetchGiftCollections,
+    fetchGiftsCollection,
+} from "./fetch";
 
 export class GiftCollectionService {
     protected giftCollectionRepo: GiftCollectionRepo;
@@ -8,7 +12,7 @@ export class GiftCollectionService {
         this.giftCollectionRepo = giftCollectionRepo;
     }
 
+    fetchGiftsCollection = fetchGiftsCollection;
     fetchGiftCollection = fetchGiftCollection;
     fetchGiftCollections = fetchGiftCollections;
 }
-

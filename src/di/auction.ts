@@ -51,8 +51,11 @@ export function auctionBidService(this: DI) {
 
 export function auctionWorker(this: DI) {
     const auctionWorker = new AuctionWorker(
+        this.Database(),
         this.AuctionBidService(),
-        this.AuctionService()
+        this.AuctionService(),
+        this.GiftCollectionService(),
+        this.GiftOwnerService()
     );
 
     return this.set("auctionWorker", auctionWorker);

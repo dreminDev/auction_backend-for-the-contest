@@ -39,3 +39,10 @@ export class PaymentRequiredError extends BaseError {
         this.name = PaymentRequiredError.name;
     }
 }
+
+export class OutOfStockError extends BaseError {
+    constructor(message = "out of stock") {
+        super(400, message);
+        this.name = OutOfStockError.name;
+    }
+}

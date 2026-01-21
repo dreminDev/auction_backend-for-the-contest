@@ -1,7 +1,8 @@
 import type { PrismaClient } from "@prisma/client";
 
-import { createGiftOwner } from "./create";
-import { fetchGiftOwner } from "./fetch";
+import { createWithTx, type TxClient } from "../../utils/tx";
+import { createGiftOwner, createManyGiftOwners } from "./create";
+import { fetchGiftOwner, fetchGiftOwnerLastSerialNumber } from "./fetch";
 
 export class GiftOwnerRepo {
     protected db: PrismaClient;
@@ -11,5 +12,11 @@ export class GiftOwnerRepo {
     }
 
     createGiftOwner = createGiftOwner;
+    createManyGiftOwners = createManyGiftOwners;
     fetchGiftOwner = fetchGiftOwner;
+    fetchGiftOwnerLastSerialNumber = fetchGiftOwnerLastSerialNumber;
+
+    withTx(tx: TxClient): this {
+        return createWithTx(this, tx) as this;
+    }
 }

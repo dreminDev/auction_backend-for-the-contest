@@ -1,7 +1,7 @@
 import type { DI } from ".";
 import { GiftCollectionRepo } from "../repo/gift_collection/mongo/repo";
-import { GiftCollectionService } from "../service/gift_collection/service";
 import { GiftOwnerRepo } from "../repo/gift_owner/mongo/repo";
+import { GiftCollectionService } from "../service/gift_collection/service";
 import { GiftOwnerService } from "../service/gift_owner/service";
 
 export function giftOwnerRepo(this: DI) {
@@ -17,7 +17,10 @@ export function giftCollectionRepo(this: DI) {
 }
 
 export function giftOwnerService(this: DI) {
-    const giftOwnerService = new GiftOwnerService(this.GiftOwnerRepo());
+    const giftOwnerService = new GiftOwnerService(
+        this.GiftOwnerRepo(),
+        this.GiftCollectionService()
+    );
 
     return this.set("giftOwnerService", giftOwnerService);
 }
