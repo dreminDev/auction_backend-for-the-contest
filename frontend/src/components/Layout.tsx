@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import './Layout.css';
@@ -10,10 +11,27 @@ interface LayoutProps {
 export function Layout({ children, onLogout }: LayoutProps) {
   const location = useLocation();
   const userId = apiClient.getUserId();
+  const [addingBalance, setAddingBalance] = useState(false);
 
   const handleLogout = () => {
     apiClient.clearUserId();
     onLogout();
+  };
+
+  const handleAddBalance = async () => {
+    if (!userId || addingBalance) return;
+    
+    try {
+      setAddingBalance(true);
+      await apiClient.addBalance(10000, 'stars');
+      // Обновляем страницу для обновления баланса
+      window.location.reload();
+    } catch (error) {
+      console.error('Ошибка при добавлении баланса:', error);
+      alert('Не удалось добавить баланс');
+    } finally {
+      setAddingBalance(false);
+    }
   };
 
   return (
@@ -46,6 +64,14 @@ export function Layout({ children, onLogout }: LayoutProps) {
             </div>
             {userId && (
               <div className="navbar-user">
+                <button 
+                  onClick={handleAddBalance} 
+                  className="navbar-add-balance-button"
+                  disabled={addingBalance}
+                  title="Добавить 10,000 ⭐"
+                >
+                  {addingBalance ? '...' : '+10k ⭐'}
+                </button>
                 <span className="navbar-user-id">ID: {userId}</span>
                 <button onClick={handleLogout} className="navbar-logout-button">
                   Выйти

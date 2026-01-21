@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
-import type { Auction } from '../api/client';
+import type { Auction, User } from '../api/client';
 import './AuctionList.css';
 
 export function AuctionList() {
@@ -9,15 +9,33 @@ export function AuctionList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const loadUserBalance = useCallback(async () => {
+    try {
+      const userData = await apiClient.getUser();
+      setUser(userData);
+    } catch (err) {
+      // Тихая обработка ошибки загрузки баланса
+    }
+  }, []);
+
   useEffect(() => {
+    const userId = apiClient.getUserId();
+    if (userId) {
+      loadUserBalance();
+    }
     loadAuctions();
     
     // Обновляем время каждую секунду для обновления таймеров
     intervalRef.current = setInterval(() => {
       setCurrentTime(new Date());
+      // Обновляем баланс каждую секунду
+      if (apiClient.getUserId()) {
+        loadUserBalance();
+      }
     }, 1000);
 
     return () => {
@@ -25,7 +43,7 @@ export function AuctionList() {
         clearInterval(intervalRef.current);
       }
     };
-  }, []);
+  }, [loadUserBalance]);
 
   const loadAuctions = async () => {
     try {
@@ -56,6 +74,10 @@ export function AuctionList() {
     }
   };
 
+  const formatNumber = (num: number) => {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  };
+
   if (loading) {
     return (
       <div className="auction-list-container">
@@ -75,7 +97,27 @@ export function AuctionList() {
 
   return (
     <div className="auction-list-container">
-      <h1 className="page-title">Активные аукционы</h1>
+      <div className="page-header">
+        <h1 className="page-title">Активные аукционы</h1>
+        {user && user.balances && user.balances.length > 0 && (
+          <div className="balance-card">
+            <div className="balance-label">Ваш баланс</div>
+            <div className="balance-value">
+              {(() => {
+                const starsBalance = user.balances.find(b => b.type === 'stars');
+                return starsBalance ? (
+                  <>
+                    <span className="balance-amount">{formatNumber(starsBalance.balance)}</span>
+                    <span className="balance-currency">⭐</span>
+                  </>
+                ) : (
+                  <span className="no-balance">0 ⭐</span>
+                );
+              })()}
+            </div>
+          </div>
+        )}
+      </div>
       {auctions.length === 0 ? (
         <div className="empty-state">Нет активных аукционов</div>
       ) : (

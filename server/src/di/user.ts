@@ -5,7 +5,11 @@ import { UserRepo } from "../repo/user/mongo/repo";
 import { UserService } from "../service/user/service";
 
 export function httpUserController(this: DI) {
-    const httpUserController = new HttpUserController(this.HttpServer(), this.UserService());
+    const httpUserController = new HttpUserController(
+        this.HttpServer(),
+        this.UserService(),
+        this.BalanceService()
+    );
 
     return this.set("httpUserController", httpUserController);
 }

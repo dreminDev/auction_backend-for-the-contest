@@ -4,11 +4,62 @@
   margin: 0 auto;
 }
 
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
 .page-title {
   color: #ffffff;
   font-size: 32px;
   font-weight: 600;
-  margin: 0 0 24px 0;
+  margin: 0;
+}
+
+.balance-card {
+  background: #212121;
+  border: 1px solid #2c2c2e;
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 180px;
+}
+
+.balance-label {
+  color: #8e8e93;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.balance-value {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.balance-amount {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.balance-currency {
+  color: #ffd700;
+  font-size: 20px;
+}
+
+.no-balance {
+  color: #8e8e93;
+  font-size: 18px;
 }
 
 .auction-grid {
