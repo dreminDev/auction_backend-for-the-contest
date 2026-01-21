@@ -5,10 +5,7 @@ import { UserRepo } from "../repo/user/mongo/repo";
 import { UserService } from "../service/user/service";
 
 export function httpUserController(this: DI) {
-    const httpUserController = new HttpUserController(
-        this.HttpServer(),
-        this.UserService()
-    );
+    const httpUserController = new HttpUserController(this.HttpServer(), this.UserService());
 
     return this.set("httpUserController", httpUserController);
 }
@@ -31,10 +28,7 @@ export function userService(this: DI) {
 }
 
 export function httpMiddleware(this: DI) {
-    const httpMiddleware = new HttpMiddleware(
-        this.HttpServer(),
-        this.UserService()
-    );
+    const httpMiddleware = new HttpMiddleware(this.HttpServer(), this.UserService());
 
     return this.set("httpMiddleware", httpMiddleware);
 }

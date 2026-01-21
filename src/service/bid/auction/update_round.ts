@@ -6,27 +6,25 @@ import type { AuctionBidService } from "./service";
 export type UpdateBetsToNextRoundIn = {
     bets: AuctionBet[];
     nextRound: number;
-    tx?: TxClient;
 };
 
 export async function updateBetsToNextRound(
     this: AuctionBidService,
-    input: UpdateBetsToNextRoundIn
+    input: UpdateBetsToNextRoundIn,
+    tx?: TxClient
 ) {
     if (input.bets.length === 0) {
         return [];
     }
 
-    const betRepo = input.tx
-        ? this.actionBetRepo.withTx(input.tx)
-        : this.actionBetRepo;
+    const betRepo = tx ? this.actionBetRepo.withTx(tx) : this.actionBetRepo;
 
     const updatedBets = await betRepo.updateManyAuctionBets(
         {
             ids: input.bets.map((bet) => bet.id),
             round: input.nextRound,
         },
-        input.tx
+        tx
     );
 
     return updatedBets;

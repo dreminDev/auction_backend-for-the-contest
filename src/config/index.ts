@@ -3,13 +3,10 @@ import { z } from "zod";
 
 import { logger } from "../../pkg/logger";
 
-export const IS_DEV =
-    process.env.NODE_ENV !== "production" && Boolean(process.env.NODE_ENV);
+export const IS_DEV = process.env.NODE_ENV !== "production" && Boolean(process.env.NODE_ENV);
 
 const configValidator = z.object({
-    ENV: z
-        .enum(["production", "development", "test"])
-        .default("production"),
+    ENV: z.enum(["production", "development", "test"]).default("production"),
 
     DATABASE_URL: z.string(),
     HTTP_SERVER_HOST: z.string().default("0.0.0.0"),
@@ -23,8 +20,7 @@ const envConfig = dotenv.config({
 if (envConfig.error || !envConfig.parsed) {
     logger.fatal({
         cause: envConfig.error,
-        message:
-            "some error ocured while parsing .env, please recheck and try again",
+        message: "some error ocured while parsing .env, please recheck and try again",
     });
 
     process.exit(1);

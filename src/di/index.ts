@@ -11,19 +11,9 @@ import {
 } from "./auction";
 import { balanceRepo, balanceService } from "./balance";
 import { database } from "./database";
-import {
-    giftCollectionRepo,
-    giftCollectionService,
-    giftOwnerRepo,
-    giftOwnerService,
-} from "./gift";
+import { giftCollectionRepo, giftCollectionService, giftOwnerRepo, giftOwnerService } from "./gift";
 import { httpServer } from "./server";
-import {
-    httpMiddleware,
-    httpUserController,
-    userRepo,
-    userService,
-} from "./user";
+import { httpMiddleware, httpUserController, userRepo, userService } from "./user";
 
 export class DI {
     protected injections: Map<String, unknown> = new Map();

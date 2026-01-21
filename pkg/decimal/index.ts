@@ -26,10 +26,7 @@ class decimal {
             const trailingZeros = integer.match(/0+$/);
             if (trailingZeros && trailingZeros[0]) {
                 const length = trailingZeros[0].length;
-                const value = integer.substring(
-                    0,
-                    integer.length - length
-                );
+                const value = integer.substring(0, integer.length - length);
                 return {
                     value: parseInt(value || "0", 10),
                     exp: length,
@@ -41,10 +38,7 @@ class decimal {
                 };
             }
         } else {
-            const value = parseInt(
-                number.split(DECIMAL_SEPARATOR).join(""),
-                10
-            );
+            const value = parseInt(number.split(DECIMAL_SEPARATOR).join(""), 10);
             return {
                 value: value,
                 exp: fractional.length * -1,
@@ -85,20 +79,14 @@ class decimal {
     }
 
     add(target: number | string | decimal): decimal {
-        const targetDecimal =
-            target instanceof decimal ? target : new decimal(target);
+        const targetDecimal = target instanceof decimal ? target : new decimal(target);
         const operands: decimal[] = [this, targetDecimal];
         operands.sort((x, y) => x.asInt.exp - y.asInt.exp);
 
         const smallest = operands[0]!.asInt.exp;
         const biggest = operands[1]!.asInt.exp;
 
-        const x = Number(
-            this.formatDecimal(
-                String(operands[1]!.asInt.value),
-                biggest - smallest
-            )
-        );
+        const x = Number(this.formatDecimal(String(operands[1]!.asInt.value), biggest - smallest));
         const y = Number(operands[0]!.asInt.value);
 
         const result = String(x + y);
@@ -106,33 +94,24 @@ class decimal {
     }
 
     sub(target: number | string | decimal): decimal {
-        const targetNum =
-            target instanceof decimal ? target.toNumber() : Number(target);
+        const targetNum = target instanceof decimal ? target.toNumber() : Number(target);
         return this.add(targetNum * -1);
     }
 
     mul(target: number | string | decimal): decimal {
-        const targetDecimal =
-            target instanceof decimal ? target : new decimal(target);
-        const result = String(
-            this.asInt.value * targetDecimal.asInt.value
-        );
+        const targetDecimal = target instanceof decimal ? target : new decimal(target);
+        const result = String(this.asInt.value * targetDecimal.asInt.value);
         const exp = this.asInt.exp + targetDecimal.asInt.exp;
 
         return new decimal(this.formatDecimal(result, exp));
     }
 
     div(target: number | string | decimal): decimal {
-        const targetDecimal =
-            target instanceof decimal ? target : new decimal(target);
+        const targetDecimal = target instanceof decimal ? target : new decimal(target);
         const smallest = Math.min(this.asInt.exp, targetDecimal.asInt.exp);
 
-        const x = new decimal(
-            this.toNumber() * Math.pow(10, Math.abs(smallest))
-        );
-        const y = new decimal(
-            targetDecimal.toNumber() * Math.pow(10, Math.abs(smallest))
-        );
+        const x = new decimal(this.toNumber() * Math.pow(10, Math.abs(smallest)));
+        const y = new decimal(targetDecimal.toNumber() * Math.pow(10, Math.abs(smallest)));
 
         return new decimal(x.toNumber() / y.toNumber());
     }
@@ -154,37 +133,25 @@ class decimal {
     }
 
     // Статические методы для удобства
-    static add(
-        a: number | string | bigint,
-        b: number | string | bigint
-    ): decimal {
+    static add(a: number | string | bigint, b: number | string | bigint): decimal {
         const aNum = new decimal(a);
         const bNum = new decimal(b);
         return aNum.add(bNum);
     }
 
-    static sub(
-        a: number | string | bigint,
-        b: number | string | bigint
-    ): decimal {
+    static sub(a: number | string | bigint, b: number | string | bigint): decimal {
         const aNum = new decimal(a);
         const bNum = new decimal(b);
         return aNum.sub(bNum);
     }
 
-    static mul(
-        a: number | string | bigint,
-        b: number | string | bigint
-    ): decimal {
+    static mul(a: number | string | bigint, b: number | string | bigint): decimal {
         const aNum = new decimal(a);
         const bNum = new decimal(b);
         return aNum.mul(bNum);
     }
 
-    static div(
-        a: number | string | bigint,
-        b: number | string | bigint
-    ): decimal {
+    static div(a: number | string | bigint, b: number | string | bigint): decimal {
         const aNum = new decimal(a);
         const bNum = new decimal(b);
         return aNum.div(bNum);

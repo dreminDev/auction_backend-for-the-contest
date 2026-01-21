@@ -1,9 +1,5 @@
 import type { GiftCollectionRepo } from "../../repo/gift_collection/mongo/repo";
-import {
-    fetchGiftCollection,
-    fetchGiftCollections,
-    fetchGiftsCollection,
-} from "./fetch";
+import { fetchGiftCollection, fetchGiftCollections, fetchGiftsCollection } from "./fetch";
 
 export class GiftCollectionService {
     protected giftCollectionRepo: GiftCollectionRepo;

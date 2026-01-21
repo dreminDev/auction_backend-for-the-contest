@@ -1,10 +1,7 @@
 import type { Prisma } from "@prisma/client";
 
 import { getTxClient, type TxClient } from "../../utils/tx";
-import type {
-    UpdateAuctionBetIn,
-    UpdateManyAuctionBetsIn,
-} from "../dto/update";
+import type { UpdateAuctionBetIn, UpdateManyAuctionBetsIn } from "../dto/update";
 import type { ActionBetRepo } from "./repo";
 
 export async function updateAuctionBet(

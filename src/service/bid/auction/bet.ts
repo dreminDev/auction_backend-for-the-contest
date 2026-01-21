@@ -1,10 +1,6 @@
 import decimal from "../../../../pkg/decimal";
 import { time } from "../../../../pkg/time";
-import {
-    BadRequestError,
-    NotFoundError,
-    PaymentRequiredError,
-} from "../../../error/customError";
+import { BadRequestError, NotFoundError, PaymentRequiredError } from "../../../error/customError";
 import type { NewBetIn } from "./dto/bet";
 import type { AuctionBidService } from "./service";
 
@@ -55,9 +51,7 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
         newRoundEndTime = time.addNow(time.second(10));
     }
 
-    const newBalance = new decimal(userInfoBalance.balance)
-        .sub(input.amount)
-        .toNumber();
+    const newBalance = new decimal(userInfoBalance.balance).sub(input.amount).toNumber();
 
     await this.balanceRepo.db.$transaction(async (tx) => {
         await this.balanceRepo.withTx(tx).updateBalance({
@@ -72,9 +66,7 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
 
         if (userBets) {
             const newBetAmount = input.amount + userBets.amount;
-            const oldBalance = new decimal(
-                (userBets.metaData as any).oldBalance
-            ).toNumber();
+            const oldBalance = new decimal((userBets.metaData as any).oldBalance).toNumber();
 
             await this.actionBetRepo.withTx(tx).updateAuctionBet({
                 id: userBets.id,

@@ -23,15 +23,11 @@ describe("decimal", () => {
         });
 
         it("should throw error for undefined", () => {
-            expect(() => new decimal(undefined as any)).toThrow(
-                "number is required"
-            );
+            expect(() => new decimal(undefined as any)).toThrow("number is required");
         });
 
         it("should throw error for null", () => {
-            expect(() => new decimal(null as any)).toThrow(
-                "number is required"
-            );
+            expect(() => new decimal(null as any)).toThrow("number is required");
         });
     });
 
@@ -69,9 +65,7 @@ describe("decimal", () => {
         });
 
         it("should support method chaining", () => {
-            const result = new decimal(10)
-                .add(5)
-                .formatNumberWithSeparators();
+            const result = new decimal(10).add(5).formatNumberWithSeparators();
             expect(result).toBe("15");
         });
     });
@@ -110,9 +104,7 @@ describe("decimal", () => {
         });
 
         it("should support method chaining", () => {
-            const result = new decimal(10)
-                .sub(5)
-                .formatNumberWithSeparators();
+            const result = new decimal(10).sub(5).formatNumberWithSeparators();
             expect(result).toBe("5");
         });
     });
@@ -229,9 +221,7 @@ describe("decimal", () => {
     describe("formatNumberWithSeparators", () => {
         it("should format number with separators", () => {
             const d = new decimal(1234567.89);
-            expect(d.formatNumberWithSeparators()).toBe(
-                "1\u00a0234\u00a0567,89"
-            );
+            expect(d.formatNumberWithSeparators()).toBe("1\u00a0234\u00a0567,89");
         });
 
         it("should format with default locale", () => {
@@ -269,11 +259,7 @@ describe("decimal", () => {
         });
 
         it("should chain multiple operations", () => {
-            const result = new decimal(10)
-                .add(5)
-                .mul(2)
-                .sub(10)
-                .formatToTwoDecimals();
+            const result = new decimal(10).add(5).mul(2).sub(10).formatToTwoDecimals();
             expect(result).toBe("20.00");
         });
 

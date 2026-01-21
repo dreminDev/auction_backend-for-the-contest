@@ -17,10 +17,7 @@ const fakeUser = {
     last_name: "test",
 };
 
-export async function httpAuthMiddleware(
-    this: HttpMiddleware,
-    req: FastifyRequest
-) {
+export async function httpAuthMiddleware(this: HttpMiddleware, req: FastifyRequest) {
     req[userIdSym] = fakeUser.id;
 
     if (!req.url.includes(httpUserPrefix)) {

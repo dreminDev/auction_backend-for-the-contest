@@ -8,6 +8,4 @@ type FetchGiftCollectionOut = {
     collection: GiftType;
 };
 
-export type FetchGiftCollectionIn =
-    | GiftCollectionIdIn
-    | FetchGiftCollectionOut;
+export type FetchGiftCollectionIn = GiftCollectionIdIn | FetchGiftCollectionOut;

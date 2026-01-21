@@ -129,15 +129,7 @@ class TimeClass {
         second: number,
         millisecond: number
     ): Date {
-        return new Date(
-            year,
-            month,
-            day,
-            hour,
-            minute,
-            second,
-            millisecond
-        );
+        return new Date(year, month, day, hour, minute, second, millisecond);
     }
 
     /**

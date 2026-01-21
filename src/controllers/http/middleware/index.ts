@@ -15,8 +15,6 @@ export class HttpMiddleware {
     httpAuthMiddleware = httpAuthMiddleware;
 
     async setup() {
-        this.app.addHook("onRequest", async (req, _) =>
-            this.httpAuthMiddleware(req)
-        );
+        this.app.addHook("onRequest", async (req, _) => this.httpAuthMiddleware(req));
     }
 }

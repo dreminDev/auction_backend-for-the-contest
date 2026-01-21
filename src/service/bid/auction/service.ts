@@ -45,6 +45,7 @@ export class AuctionBidService {
         this.auctionRepo = auctionRepo;
         this.actionRepo = actionRepo;
     }
+
     fetchAuctionLastBetByAuctionId = fetchAuctionLastBetByAuctionId;
     fetchActionBetListByAuctionId = fetchActionBetListByAuctionId;
     fetchUserBetsByAuctionIdAndUserId = fetchUserBetsByAuctionIdAndUserId;

@@ -3,8 +3,7 @@ import { splitSupplyByRounds } from "../../utils/auction/suplyByRound";
 import type { AuctionWorker } from "./worker";
 
 export async function auctionEnd(this: AuctionWorker) {
-    const auctions =
-        await this.auctionService.fetchAuctionListByStatus("active");
+    const auctions = await this.auctionService.fetchAuctionListByStatus("active");
     if (auctions.length === 0) {
         return;
     }
@@ -14,23 +13,17 @@ export async function auctionEnd(this: AuctionWorker) {
     try {
         await this.db.$transaction(async (tx) => {
             for (const auction of auctions) {
-                const endAunction = time.diff(
-                    auction.roundEndTime,
-                    time.now(),
-                );
+                const endAunction = time.diff(auction.roundEndTime, time.now());
                 console.log(`endAunction:`, endAunction);
                 if (endAunction > 0) {
                     continue;
                 }
 
                 // Получаем ставки текущего раунда
-                const betsList =
-                    await this.auctionBidService.fetchActionBetListByAuctionId(
-                        {
-                            auctionId: auction.id,
-                            round: auction.currentRound,
-                        }
-                    );
+                const betsList = await this.auctionBidService.fetchActionBetListByAuctionId({
+                    auctionId: auction.id,
+                    round: auction.currentRound,
+                });
                 console.log(`betsList:`, betsList);
 
                 const supplyByRound = splitSupplyByRounds({
@@ -56,9 +49,7 @@ export async function auctionEnd(this: AuctionWorker) {
                 //     continue;
                 // }
 
-                const sortedBets = [...betsList].sort(
-                    (a, b) => b.amount - a.amount
-                );
+                const sortedBets = [...betsList].sort((a, b) => b.amount - a.amount);
                 const winners = sortedBets.slice(0, supplyByRound);
                 const losers = sortedBets.slice(supplyByRound);
 
@@ -88,8 +79,8 @@ export async function auctionEnd(this: AuctionWorker) {
                             {
                                 bets: losers,
                                 nextRound: nextRound,
-                                tx,
-                            }
+                            },
+                            tx
                         );
 
                         // Обновляем аукцион для следующего раунда
@@ -99,18 +90,17 @@ export async function auctionEnd(this: AuctionWorker) {
                             data: {
                                 currentRound: nextRound,
                                 roundStartTime: nextRoundStartTime,
-                                roundEndTime: time.add(
-                                    nextRoundStartTime,
-                                    auction.roundDuration
-                                ),
+                                roundEndTime: time.add(nextRoundStartTime, auction.roundDuration),
                             },
                         });
                     } else {
                         // Возвращаем баланс, так как это последний раунд
-                        await this.auctionBidService.returnBetsBalance({
-                            bets: losers,
-                            tx,
-                        });
+                        await this.auctionBidService.returnBetsBalance(
+                            {
+                                bets: losers,
+                            },
+                            tx
+                        );
 
                         await tx.auction.update({
                             where: { id: auction.id },
@@ -129,10 +119,7 @@ export async function auctionEnd(this: AuctionWorker) {
                             data: {
                                 currentRound: nextRound,
                                 roundStartTime: nextRoundStartTime,
-                                roundEndTime: time.add(
-                                    nextRoundStartTime,
-                                    auction.roundDuration
-                                ),
+                                roundEndTime: time.add(nextRoundStartTime, auction.roundDuration),
                             },
                         });
                     } else {

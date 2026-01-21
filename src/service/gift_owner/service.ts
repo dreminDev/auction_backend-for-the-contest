@@ -7,10 +7,7 @@ export class GiftOwnerService {
     protected giftOwnerRepo: GiftOwnerRepo;
     protected giftCollectionService: GiftCollectionService;
 
-    constructor(
-        giftOwnerRepo: GiftOwnerRepo,
-        giftCollectionService: GiftCollectionService
-    ) {
+    constructor(giftOwnerRepo: GiftOwnerRepo, giftCollectionService: GiftCollectionService) {
         this.giftOwnerRepo = giftOwnerRepo;
         this.giftCollectionService = giftCollectionService;
     }

@@ -4,12 +4,8 @@ import type {
 } from "../../../repo/action_bet/dto/fetch";
 import type { AuctionBidService } from "./service";
 
-export async function fetchAuctionLastBetByAuctionId(
-    this: AuctionBidService,
-    auctionId: string
-) {
-    const auctionLastBet =
-        await this.actionBetRepo.fetchAuctionLastBetByAuctionId(auctionId);
+export async function fetchAuctionLastBetByAuctionId(this: AuctionBidService, auctionId: string) {
+    const auctionLastBet = await this.actionBetRepo.fetchAuctionLastBetByAuctionId(auctionId);
 
     if (!auctionLastBet) {
         return null;
@@ -27,10 +23,7 @@ export async function fetchActionBetListByAuctionId(
     return actionBetList;
 }
 
-export async function fetchAuctionById(
-    this: AuctionBidService,
-    input: FetchAuctionBetIn
-) {
+export async function fetchAuctionById(this: AuctionBidService, input: FetchAuctionBetIn) {
     const [auction, actionBetList] = await Promise.all([
         this.auctionService.fetchAuction({
             id: input.auctionId,
@@ -58,8 +51,7 @@ export async function fetchUserBetsByAuctionIdAndUserId(
     this: AuctionBidService,
     input: FetchUserBetsByAuctionIdAndUserIdIn
 ) {
-    const userBets =
-        await this.actionBetRepo.fetchUserBetsByAuctionIdAndUserId(input);
+    const userBets = await this.actionBetRepo.fetchUserBetsByAuctionIdAndUserId(input);
 
     return userBets;
 }

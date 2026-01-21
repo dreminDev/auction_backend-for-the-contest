@@ -1,8 +1,5 @@
 import { getTxClient, type TxClient } from "../../utils/tx";
-import type {
-    FetchBalanceIn,
-    FetchBalancesByUserIdIn,
-} from "../dto/fetch";
+import type { FetchBalanceIn, FetchBalancesByUserIdIn } from "../dto/fetch";
 import type { BalanceRepo } from "./repo";
 
 export async function fetchBalanceByIdAndType(

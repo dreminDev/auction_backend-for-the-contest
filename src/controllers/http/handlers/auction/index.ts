@@ -46,14 +46,14 @@ export class HttpAuctionController {
                 fastify.put(
                     "/",
                     async (
-                        req: FastifyRequest<{ Body: CreateAuctionIn }>,
+                        req: FastifyRequest<{
+                            Body: CreateAuctionIn;
+                        }>,
                         res
                     ) => this.createAuction(req, res)
                 );
 
-                fastify.post("/bet", async (req, res) =>
-                    this.bet(req, res)
-                );
+                fastify.post("/bet", async (req, res) => this.bet(req, res));
 
                 fastify.get("/info", async (req: FastifyRequest, res) =>
                     this.fetchAuctionById(req, res)

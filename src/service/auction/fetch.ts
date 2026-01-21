@@ -1,13 +1,7 @@
-import type {
-    FetchAuctionIn,
-    FetchAuctionListByStatusIn,
-} from "../../repo/auction/dto/fetch";
+import type { FetchAuctionIn, FetchAuctionListByStatusIn } from "../../repo/auction/dto/fetch";
 import type { AuctionService } from "./service";
 
-export async function fetchAuction(
-    this: AuctionService,
-    input: FetchAuctionIn
-) {
+export async function fetchAuction(this: AuctionService, input: FetchAuctionIn) {
     const auction = await this.auctionRepo.fetchAuction(input);
 
     if (!auction) {
@@ -21,8 +15,7 @@ export async function fetchAuctionListByStatus(
     this: AuctionService,
     input: FetchAuctionListByStatusIn
 ) {
-    const auctionList =
-        await this.auctionRepo.fetchAuctionListByStatus(input);
+    const auctionList = await this.auctionRepo.fetchAuctionListByStatus(input);
 
     if (auctionList.length === 0) {
         return [];

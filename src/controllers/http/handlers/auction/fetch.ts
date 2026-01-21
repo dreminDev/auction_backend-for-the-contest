@@ -14,16 +14,12 @@ export async function fetchAuctionListByStatus(
     req: FastifyRequest<{ Params: FetchAuctionListByStatusIn }>,
     res: FastifyReply
 ) {
-    const validated = fetchAuctionListByStatusValidator.safeParse(
-        req.query
-    );
+    const validated = fetchAuctionListByStatusValidator.safeParse(req.query);
     if (!validated.success) {
         return res.status(400).send({ error: validated.error.issues });
     }
 
-    const out = await this.auctionService.fetchAuctionListByStatus(
-        validated.data.status
-    );
+    const out = await this.auctionService.fetchAuctionListByStatus(validated.data.status);
 
     res.send(out);
 }
@@ -45,9 +41,7 @@ export async function fetchAuctionById(
     }
 
     if (validated.data.limit && validated.data.limit >= 0) {
-        return res
-            .status(400)
-            .send({ error: "limit must be less than 10" });
+        return res.status(400).send({ error: "limit must be less than 10" });
     }
 
     const out = await this.auctionBidService.fetchAuctionById({

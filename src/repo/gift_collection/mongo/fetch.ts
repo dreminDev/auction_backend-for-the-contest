@@ -9,10 +9,7 @@ export async function fetchGiftsCollection(this: GiftCollectionRepo) {
     return giftCollections;
 }
 
-export async function fetchGiftCollection(
-    this: GiftCollectionRepo,
-    input: FetchGiftCollectionIn
-) {
+export async function fetchGiftCollection(this: GiftCollectionRepo, input: FetchGiftCollectionIn) {
     const where: Prisma.GiftCollectionWhereInput = {};
 
     if ("id" in input) {

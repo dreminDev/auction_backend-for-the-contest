@@ -7,16 +7,19 @@ import type { AuctionBidService } from "./service";
 
 export type ReturnBetsBalanceIn = {
     bets: AuctionBet[];
-    tx?: TxClient;
 };
 
 export async function returnBetsBalance(
     this: AuctionBidService,
-    input: ReturnBetsBalanceIn
+    input: ReturnBetsBalanceIn,
+    tx?: TxClient
 ) {
     if (input.bets.length === 0) {
         return [];
     }
+
+    const balanceRepo = tx ? this.balanceRepo.withTx(tx) : this.balanceRepo;
+    const actionRepo = tx ? this.actionRepo.withTx(tx) : this.actionRepo;
 
     const balanceUpdates = new Map<
         string,
@@ -32,11 +35,10 @@ export async function returnBetsBalance(
         const metaData = bet.metaData as any;
         const balanceType = metaData?.balanceType ?? "stars";
 
-        const userBalance =
-            await this.balanceService.fetchBalanceByIdAndType({
-                userId: bet.userId,
-                type: balanceType as any,
-            });
+        const userBalance = await this.balanceService.fetchBalanceByIdAndType({
+            userId: bet.userId,
+            type: balanceType as any,
+        });
 
         if (!userBalance) {
             continue;
@@ -56,42 +58,30 @@ export async function returnBetsBalance(
         }
     }
 
-    const balanceRepo = input.tx
-        ? this.balanceRepo.withTx(input.tx)
-        : this.balanceRepo;
-    const actionRepo = input.tx
-        ? this.actionRepo.withTx(input.tx)
-        : this.actionRepo;
-
     const updatedBalances = [];
     const now = time.now();
 
     for (const update of balanceUpdates.values()) {
-        const currentBalance =
-            await this.balanceService.fetchBalanceByIdAndType({
-                userId: update.userId,
-                type: update.balanceType as any,
-            });
+        const currentBalance = await this.balanceService.fetchBalanceByIdAndType({
+            userId: update.userId,
+            type: update.balanceType as any,
+        });
 
         if (!currentBalance) {
             continue;
         }
 
-        const newBalance = new decimal(currentBalance.balance)
-            .add(update.amount)
-            .toNumber();
+        const newBalance = new decimal(currentBalance.balance).add(update.amount).toNumber();
 
         const updatedBalance = await balanceRepo.updateBalance(
             {
                 id: currentBalance.id,
                 balance: newBalance,
             },
-            input.tx
+            tx
         );
 
-        const userBets = input.bets.filter(
-            (bet) => bet.userId === update.userId
-        );
+        const userBets = input.bets.filter((bet) => bet.userId === update.userId);
         for (const bet of userBets) {
             await actionRepo.createAction(
                 {
@@ -107,7 +97,7 @@ export async function returnBetsBalance(
                     },
                     addedAt: now,
                 },
-                input.tx
+                tx
             );
         }
 

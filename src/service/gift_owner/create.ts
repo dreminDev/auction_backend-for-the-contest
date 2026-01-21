@@ -1,7 +1,7 @@
 import { NotFoundError, OutOfStockError } from "../../error/customError";
 import type { CreateGiftOwnerIn } from "../../repo/gift_owner/dto/create";
-import type { CreateGiftOwnerUniqueIn } from "./dto/create";
 import type { TxClient } from "../../repo/utils/tx";
+import type { CreateGiftOwnerUniqueIn } from "./dto/create";
 import type { GiftOwnerService } from "./service";
 
 export async function createGiftOwner(
@@ -9,9 +9,8 @@ export async function createGiftOwner(
     input: CreateGiftOwnerIn,
     tx?: TxClient
 ) {
-    const giftOwnerRepo = tx
-        ? this.giftOwnerRepo.withTx(tx)
-        : this.giftOwnerRepo;
+    const giftOwnerRepo = tx ? this.giftOwnerRepo.withTx(tx) : this.giftOwnerRepo;
+
     const giftOwner = await giftOwnerRepo.createGiftOwner(input, tx);
 
     return giftOwner;
@@ -30,25 +29,24 @@ export async function createGiftOwnerUnique(
 
     // Все записи должны быть из одной коллекции подарков
     const giftCollectionId = inputs[0]!.giftCollectionId;
-    const allSameCollection = inputs.every(
-        (inp) => inp.giftCollectionId === giftCollectionId
-    );
+    const allSameCollection = inputs.every((inp) => inp.giftCollectionId === giftCollectionId);
 
     if (!allSameCollection) {
         throw new Error("All inputs must have the same giftCollectionId");
     }
 
-    const giftOwnerRepo = tx
-        ? this.giftOwnerRepo.withTx(tx)
-        : this.giftOwnerRepo;
+    const giftOwnerRepo = tx ? this.giftOwnerRepo.withTx(tx) : this.giftOwnerRepo;
 
     const [giftInfo, giftLastSerialId] = await Promise.all([
         this.giftCollectionService.fetchGiftCollection({
             id: giftCollectionId,
         }),
-        giftOwnerRepo.fetchGiftOwnerLastSerialNumber({
-            giftId: giftCollectionId,
-        }, tx),
+        giftOwnerRepo.fetchGiftOwnerLastSerialNumber(
+            {
+                giftId: giftCollectionId,
+            },
+            tx
+        ),
     ]);
 
     if (!giftInfo) {
@@ -62,16 +60,13 @@ export async function createGiftOwnerUnique(
         throw new OutOfStockError("Gift collection is out of stock");
     }
 
-    const giftOwnersToCreate: CreateGiftOwnerIn[] = inputs.map(
-        (inp, index) => ({
-            ownerId: inp.userId,
-            giftId: giftInfo.id,
-            serialNumber: lastSerialId + index + 1,
-        })
-    );
+    const giftOwnersToCreate: CreateGiftOwnerIn[] = inputs.map((inp, index) => ({
+        ownerId: inp.userId,
+        giftId: giftInfo.id,
+        serialNumber: lastSerialId + index + 1,
+    }));
 
-    const createdGiftOwners =
-        await giftOwnerRepo.createManyGiftOwners(giftOwnersToCreate, tx);
+    const createdGiftOwners = await giftOwnerRepo.createManyGiftOwners(giftOwnersToCreate, tx);
 
     return Array.isArray(input) ? createdGiftOwners : createdGiftOwners[0];
 }

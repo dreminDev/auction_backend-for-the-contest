@@ -11,11 +11,7 @@ const betSchema = z.object({
     balanceType: z.enum(BalanceType),
 });
 
-export async function bet(
-    this: HttpAuctionController,
-    req: FastifyRequest,
-    res: FastifyReply
-) {
+export async function bet(this: HttpAuctionController, req: FastifyRequest, res: FastifyReply) {
     const userId = req[userIdSym];
 
     const validated = betSchema.safeParse(req.body);
