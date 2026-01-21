@@ -13,6 +13,9 @@ export async function httpServer(this: App) {
     const httpAuctionController = this.di.HttpAuctionController();
     await httpAuctionController.setup();
 
+    const httpGiftsController = this.di.HttpGiftsController();
+    await httpGiftsController.setup();
+
     try {
         await httpServer.ready();
 

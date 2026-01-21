@@ -1,8 +1,19 @@
 import type { DI } from ".";
+import { HttpGiftsController } from "../controllers/http/handlers/gift";
 import { GiftCollectionRepo } from "../repo/gift_collection/mongo/repo";
 import { GiftOwnerRepo } from "../repo/gift_owner/mongo/repo";
 import { GiftCollectionService } from "../service/gift_collection/service";
 import { GiftOwnerService } from "../service/gift_owner/service";
+
+export function httpGiftsController(this: DI) {
+    const httpGiftsController = new HttpGiftsController(
+        this.HttpServer(),
+        this.GiftOwnerService(),
+        this.GiftCollectionService()
+    );
+
+    return this.set("httpGiftsController", httpGiftsController);
+}
 
 export function giftOwnerRepo(this: DI) {
     const giftOwnerRepo = new GiftOwnerRepo(this.Database());

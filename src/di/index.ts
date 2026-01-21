@@ -11,7 +11,13 @@ import {
 } from "./auction";
 import { balanceRepo, balanceService } from "./balance";
 import { database } from "./database";
-import { giftCollectionRepo, giftCollectionService, giftOwnerRepo, giftOwnerService } from "./gift";
+import {
+    giftCollectionRepo,
+    giftCollectionService,
+    giftOwnerRepo,
+    giftOwnerService,
+    httpGiftsController,
+} from "./gift";
 import { httpServer } from "./server";
 import { httpMiddleware, httpUserController, userRepo, userService } from "./user";
 
@@ -39,6 +45,7 @@ export class DI {
     readonly AuctionBidService = auctionBidService;
     readonly AuctionWorker = auctionWorker;
 
+    readonly HttpGiftsController = httpGiftsController;
     readonly GiftOwnerRepo = giftOwnerRepo;
     readonly GiftCollectionRepo = giftCollectionRepo;
     readonly GiftOwnerService = giftOwnerService;

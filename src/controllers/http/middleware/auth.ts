@@ -18,14 +18,16 @@ const fakeUser = {
 };
 
 export async function httpAuthMiddleware(this: HttpMiddleware, req: FastifyRequest) {
-    req[userIdSym] = fakeUser.id;
 
-    if (!req.url.includes(httpUserPrefix)) {
-        return;
+    const userId = req.headers['user-id'];
+    if (!userId) {
+        throw new Error('User ID is required');
     }
 
+    req[userIdSym] = Number(userId);
+
     await this.userService.registerUser({
-        userId: fakeUser.id,
+        userId: Number(userId),
         username: fakeUser.username ?? null,
         first_name: fakeUser.first_name ?? null,
         last_name: fakeUser.last_name ?? null,
