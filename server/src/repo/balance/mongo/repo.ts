@@ -6,7 +6,7 @@ import { fetchBalanceByIdAndType, fetchBalancesByUserId } from "./fetch";
 import { updateBalance } from "./update";
 
 export class BalanceRepo {
-    readonly db: PrismaClient;
+    protected db: PrismaClient;
 
     constructor(db: PrismaClient) {
         this.db = db;

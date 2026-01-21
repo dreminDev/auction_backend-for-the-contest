@@ -4,7 +4,7 @@ import { createUser } from "./create";
 import { fetchUserById } from "./fetch";
 
 export class UserRepo {
-    readonly db: PrismaClient;
+    protected db: PrismaClient;
 
     constructor(db: PrismaClient) {
         this.db = db;

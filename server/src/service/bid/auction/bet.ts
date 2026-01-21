@@ -53,7 +53,7 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
 
     const newBalance = new decimal(userInfoBalance.balance).sub(input.amount).toNumber();
 
-    await this.balanceRepo.db.$transaction(async (tx) => {
+    await this.db.$transaction(async (tx) => {
         await this.balanceRepo.withTx(tx).updateBalance({
             id: userInfoBalance.id,
             balance: newBalance,

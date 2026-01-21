@@ -6,7 +6,7 @@ import { fetchAuction, fetchAuctionListByStatus } from "./fetch";
 import { updateAuction } from "./update";
 
 export class AuctionRepo {
-    readonly db: PrismaClient;
+    protected db: PrismaClient;
 
     constructor(db: PrismaClient) {
         this.db = db;

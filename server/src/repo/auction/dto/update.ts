@@ -1,4 +1,8 @@
 export type UpdateAuctionIn = {
     id: string;
-    roundEndTime: Date;
+    roundEndTime?: Date;
+    currentRound?: number;
+    roundStartTime?: Date;
+    status?: "active" | "ended";
+    endedAt?: Date;
 };

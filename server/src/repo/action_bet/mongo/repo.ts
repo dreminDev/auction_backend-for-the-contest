@@ -10,7 +10,7 @@ import {
 import { updateAuctionBet, updateManyAuctionBets } from "./update";
 
 export class ActionBetRepo {
-    readonly db: PrismaClient;
+    protected db: PrismaClient;
 
     constructor(db: PrismaClient) {
         this.db = db;

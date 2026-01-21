@@ -10,13 +10,13 @@ export type UpdateBetsToNextRoundIn = {
 
 export async function updateBetsToNextRound(
     this: AuctionBidService,
-    input: UpdateBetsToNextRoundIn,
-    tx?: TxClient
+    input: UpdateBetsToNextRoundIn
 ) {
     if (input.bets.length === 0) {
         return [];
     }
 
+    const tx = this.tx;
     const betRepo = tx ? this.actionBetRepo.withTx(tx) : this.actionBetRepo;
 
     const updatedBets = await betRepo.updateManyAuctionBets(

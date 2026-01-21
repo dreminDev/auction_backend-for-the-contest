@@ -4,11 +4,8 @@ import type { TxClient } from "../../repo/utils/tx";
 import type { CreateGiftOwnerUniqueIn } from "./dto/create";
 import type { GiftOwnerService } from "./service";
 
-export async function createGiftOwner(
-    this: GiftOwnerService,
-    input: CreateGiftOwnerIn,
-    tx?: TxClient
-) {
+export async function createGiftOwner(this: GiftOwnerService, input: CreateGiftOwnerIn) {
+    const tx = this.tx;
     const giftOwnerRepo = tx ? this.giftOwnerRepo.withTx(tx) : this.giftOwnerRepo;
 
     const giftOwner = await giftOwnerRepo.createGiftOwner(input, tx);
@@ -18,8 +15,7 @@ export async function createGiftOwner(
 
 export async function createGiftOwnerUnique(
     this: GiftOwnerService,
-    input: CreateGiftOwnerUniqueIn | CreateGiftOwnerUniqueIn[],
-    tx?: TxClient
+    input: CreateGiftOwnerUniqueIn | CreateGiftOwnerUniqueIn[]
 ) {
     const inputs = Array.isArray(input) ? input : [input];
 
@@ -35,6 +31,7 @@ export async function createGiftOwnerUnique(
         throw new Error("All inputs must have the same giftCollectionId");
     }
 
+    const tx = this.tx;
     const giftOwnerRepo = tx ? this.giftOwnerRepo.withTx(tx) : this.giftOwnerRepo;
 
     const [giftInfo, giftLastSerialId] = await Promise.all([

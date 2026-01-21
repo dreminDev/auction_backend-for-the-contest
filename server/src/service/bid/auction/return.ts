@@ -9,15 +9,12 @@ export type ReturnBetsBalanceIn = {
     bets: AuctionBet[];
 };
 
-export async function returnBetsBalance(
-    this: AuctionBidService,
-    input: ReturnBetsBalanceIn,
-    tx?: TxClient
-) {
+export async function returnBetsBalance(this: AuctionBidService, input: ReturnBetsBalanceIn) {
     if (input.bets.length === 0) {
         return [];
     }
 
+    const tx = this.tx;
     const balanceRepo = tx ? this.balanceRepo.withTx(tx) : this.balanceRepo;
     const actionRepo = tx ? this.actionRepo.withTx(tx) : this.actionRepo;
 

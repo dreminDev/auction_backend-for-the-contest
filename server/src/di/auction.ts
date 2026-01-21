@@ -40,6 +40,7 @@ export function actionBetRepo(this: DI) {
 
 export function auctionBidService(this: DI) {
     const auctionBidService = new AuctionBidService(
+        this.Database(),
         this.UserService(),
         this.AuctionService(),
         this.BalanceService(),

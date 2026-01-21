@@ -1,4 +1,5 @@
 import type { BalanceType } from "@prisma/client";
+
 import type { BalanceService } from "./service";
 
 export type AddBalanceIn = {

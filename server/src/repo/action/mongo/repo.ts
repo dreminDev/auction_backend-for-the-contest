@@ -4,7 +4,7 @@ import { createWithTx, type TxClient } from "../../utils/tx";
 import { createAction } from "./create";
 
 export class ActionRepo {
-    readonly db: PrismaClient;
+    protected db: PrismaClient;
 
     constructor(db: PrismaClient) {
         this.db = db;

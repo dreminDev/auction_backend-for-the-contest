@@ -32,15 +32,14 @@ export async function auctionEnd(this: AuctionWorker) {
                 });
                 // временно убрал для тестов.
                 if (betsList.length === 0 || supplyByRound > betsList.length) {
-                    await tx.auction.update({
-                        where: { id: auction.id },
-                        data: {
-                            roundEndTime: time.add(new Date(auction.roundEndTime), time.minute(5)),
-                        },
+                    await this.auctionService.withTx(tx).updateAuction({
+                        id: auction.id,
+                        roundEndTime: time.add(new Date(auction.roundEndTime), time.minute(5)),
                     });
                     continue;
                 }
                 console.log(`betsList:`, betsList);
+
                 const sortedBets = [...betsList].sort((a, b) => b.amount - a.amount);
                 const winners = sortedBets.slice(0, supplyByRound);
                 const losers = sortedBets.slice(supplyByRound);
@@ -51,12 +50,11 @@ export async function auctionEnd(this: AuctionWorker) {
 
                 // Выдаем подарки победителям
                 if (winners.length > 0) {
-                    await this.giftOwnerService.createGiftOwnerUnique(
+                    await this.giftOwnerService.withTx(tx).createGiftOwnerUnique(
                         winners.map((bet) => ({
                             giftCollectionId: auction.giftCollectionId,
                             userId: bet.userId,
-                        })),
-                        tx
+                        }))
                     );
                 }
 
@@ -67,60 +65,46 @@ export async function auctionEnd(this: AuctionWorker) {
 
                     if (hasNextRound) {
                         // Переводим ставки в следующий раунд
-                        await this.auctionBidService.updateBetsToNextRound(
-                            {
-                                bets: losers,
-                                nextRound: nextRound,
-                            },
-                            tx
-                        );
+                        await this.auctionBidService.withTx(tx).updateBetsToNextRound({
+                            bets: losers,
+                            nextRound: nextRound,
+                        });
 
                         // Обновляем аукцион для следующего раунда
                         const nextRoundStartTime = time.now();
-                        await tx.auction.update({
-                            where: { id: auction.id },
-                            data: {
-                                currentRound: nextRound,
-                                roundStartTime: nextRoundStartTime,
-                                roundEndTime: time.add(nextRoundStartTime, auction.roundDuration),
-                            },
+                        await this.auctionService.withTx(tx).updateAuction({
+                            id: auction.id,
+                            currentRound: nextRound,
+                            roundStartTime: nextRoundStartTime,
+                            roundEndTime: time.add(nextRoundStartTime, auction.roundDuration),
                         });
                     } else {
                         // Возвращаем баланс, так как это последний раунд
-                        await this.auctionBidService.returnBetsBalance(
-                            {
-                                bets: losers,
-                            },
-                            tx
-                        );
+                        await this.auctionBidService.withTx(tx).returnBetsBalance({
+                            bets: losers,
+                        });
 
-                        await tx.auction.update({
-                            where: { id: auction.id },
-                            data: {
-                                status: "ended",
-                                endedAt: time.now(),
-                            },
+                        await this.auctionService.withTx(tx).updateAuction({
+                            id: auction.id,
+                            status: "ended",
+                            endedAt: time.now(),
                         });
                     }
                 } else {
                     const nextRound = auction.currentRound + 1;
                     if (nextRound <= auction.roundCount) {
                         const nextRoundStartTime = time.now();
-                        await tx.auction.update({
-                            where: { id: auction.id },
-                            data: {
-                                currentRound: nextRound,
-                                roundStartTime: nextRoundStartTime,
-                                roundEndTime: time.add(nextRoundStartTime, auction.roundDuration),
-                            },
+                        await this.auctionService.withTx(tx).updateAuction({
+                            id: auction.id,
+                            currentRound: nextRound,
+                            roundStartTime: nextRoundStartTime,
+                            roundEndTime: time.add(nextRoundStartTime, auction.roundDuration),
                         });
                     } else {
-                        await tx.auction.update({
-                            where: { id: auction.id },
-                            data: {
-                                status: "ended",
-                                endedAt: time.now(),
-                            },
+                        await this.auctionService.withTx(tx).updateAuction({
+                            id: auction.id,
+                            status: "ended",
+                            endedAt: time.now(),
                         });
                     }
                 }

@@ -22,6 +22,7 @@ export function userRepo(this: DI) {
 
 export function userService(this: DI) {
     const userService = new UserService(
+        this.Database(),
         this.UserRepo(),
         this.BalanceRepo(),
         this.BalanceService(),
