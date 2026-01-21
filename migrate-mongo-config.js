@@ -1,10 +1,11 @@
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({ override: false })
 
 const config = {
     mongodb: {
-        url: process.env.DATABASE_URL,
+        // Используем переменную окружения или fallback для Docker
+        url: process.env.DATABASE_URL || "mongodb://mongodb:27017/auction",
         databaseName: "auction",
         options: {},
     },

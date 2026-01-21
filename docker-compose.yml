@@ -1,4 +1,3 @@
-
 version: "3.9"
 
 services:
@@ -45,6 +44,35 @@ services:
       timeout: 5s
       retries: 5
       start_period: 15s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: auction_backend
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    ports:
+      - "${HTTP_SERVER_PORT:-5000}:5000"
+    environment:
+      DATABASE_URL: mongodb://${MONGO_USER:-dremin}:${MONGO_PASSWORD:-2235}@mongodb:27017/${MONGO_DB:-auction}?authSource=admin
+      HTTP_SERVER_HOST: ${HTTP_SERVER_HOST:-0.0.0.0}
+      HTTP_SERVER_PORT: ${HTTP_SERVER_PORT:-5000}
+      ENV: ${ENV:-production}
+    volumes:
+      - ./migrations:/app/migrations
+      - ./prisma:/app/prisma
+    command: >
+      sh -c "
+        echo 'Waiting for MongoDB to be ready...' &&
+        sleep 5 &&
+        echo 'Applying migrate-mongo migrations...' &&
+        bunx migrate-mongo up &&
+        echo 'Starting application...' &&
+        bun run index.ts
+      "
 
 volumes:
   mongo_data:
