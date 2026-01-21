@@ -8,5 +8,6 @@ export async function createGiftOwner(
     const newGiftOwner = await this.db.giftOwner.create({
         data: input,
     });
+    
     return newGiftOwner;
 }

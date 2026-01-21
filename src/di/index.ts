@@ -11,7 +11,12 @@ import {
 } from "./auction";
 import { balanceRepo, balanceService } from "./balance";
 import { database } from "./database";
-import { giftCollectionRepo, giftOwnerRepo } from "./gift";
+import {
+    giftCollectionRepo,
+    giftCollectionService,
+    giftOwnerRepo,
+    giftOwnerService,
+} from "./gift";
 import { httpServer } from "./server";
 import {
     httpMiddleware,
@@ -46,6 +51,8 @@ export class DI {
 
     readonly GiftOwnerRepo = giftOwnerRepo;
     readonly GiftCollectionRepo = giftCollectionRepo;
+    readonly GiftOwnerService = giftOwnerService;
+    readonly GiftCollectionService = giftCollectionService;
 
     readonly ActionRepo = actionRepo;
     readonly ActionService = actionService;
