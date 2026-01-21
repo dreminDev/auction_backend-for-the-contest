@@ -6,7 +6,7 @@ import type { HttpUserController } from ".";
 import { userIdSym } from "../../middleware/auth";
 
 const addBalanceValidator = z.object({
-    amount: z.number().int().positive().optional().default(10000),
+    amount: z.number().int().positive(), // Обязательное поле, любая положительная сумма
     type: z.enum(BalanceType).optional().default(BalanceType.stars),
 });
 

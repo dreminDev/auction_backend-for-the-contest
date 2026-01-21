@@ -206,7 +206,7 @@ class ApiClient {
     });
   }
 
-  async addBalance(amount: number = 10000, type: string = 'stars'): Promise<Balance> {
+  async addBalance(amount: number = 50000, type: string = 'stars'): Promise<Balance> {
     return this.request<Balance>('/user/balance', {
       method: 'POST',
       body: JSON.stringify({ amount, type }),

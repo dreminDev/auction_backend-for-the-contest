@@ -1,6 +1,7 @@
 import decimal from "../../../../pkg/decimal";
 import { time } from "../../../../pkg/time";
 import { BadRequestError, NotFoundError, PaymentRequiredError } from "../../../error/customError";
+import { splitSupplyByRounds } from "../../../utils/auction/suplyByRound";
 import type { NewBetIn } from "./dto/bet";
 import type { AuctionBidService } from "./service";
 
@@ -45,7 +46,38 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
         throw new BadRequestError("auction round time has expired");
     }
 
-    // Если осталось менее 10 секунд до конца раунда, продлеваем на 10 секунд от текущего момента
+    const currentRoundBets = await this.fetchActionBetListByAuctionId({
+        auctionId: input.auctionId,
+        round: auction.currentRound,
+    });
+
+    // Вычисляем количество призовых мест в текущем раунде
+    const supplyByRound = splitSupplyByRounds({
+        totalSupply: auction.supplyCount,
+        rounds: auction.roundCount,
+        currentRound: auction.currentRound,
+    });
+
+    // Вычисляем итоговую сумму ставки пользователя
+    const totalBetAmount = userBets ? userBets.amount + input.amount : input.amount;
+
+    // Проверяем, что ставка перебивающая (больше последней выигрывающей ставки)
+    // Исключаем ставку пользователя из списка для корректной проверки
+    const betsWithoutUser = currentRoundBets.filter((bet) => bet.userId !== input.userId);
+    
+    if (betsWithoutUser.length >= supplyByRound) {
+        // Сортируем ставки по убыванию и берем последнюю выигрывающую ставку
+        const sortedBets = [...betsWithoutUser].sort((a, b) => b.amount - a.amount);
+        const lastWinningBetAmount = sortedBets[supplyByRound - 1]!.amount;
+
+        // Ставка должна быть больше последней выигрывающей ставки
+        if (totalBetAmount <= lastWinningBetAmount) {
+            throw new BadRequestError(
+                `bet must be higher than the last winning bet (${lastWinningBetAmount}). Your total bet: ${totalBetAmount}`
+            );
+        }
+    }
+
     let newRoundEndTime = auction.roundEndTime;
     if (timeUntilEnd < tenSecondsInMs) {
         newRoundEndTime = time.addNow(time.second(10));

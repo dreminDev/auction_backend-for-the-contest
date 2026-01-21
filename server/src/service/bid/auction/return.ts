@@ -59,6 +59,9 @@ export async function returnBetsBalance(this: AuctionBidService, input: ReturnBe
     const now = time.now();
 
     for (const update of balanceUpdates.values()) {
+        // Получаем актуальный баланс перед обновлением для корректного расчета
+        // Это необходимо, так как баланс мог измениться между первой выборкой и обновлением
+        // Конфликты транзакций обрабатываются на уровне выше (в auction_end.ts)
         const currentBalance = await this.balanceService.fetchBalanceByIdAndType({
             userId: update.userId,
             type: update.balanceType as any,

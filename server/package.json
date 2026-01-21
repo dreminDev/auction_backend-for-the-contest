@@ -7,7 +7,14 @@
         "start": "bun run index.ts",
         "dev": "bun run --watch index.ts",
         "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-        "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\""
+        "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md}\"",
+        "bot:participant": "bun run src/bots/scripts/participant.ts",
+        "bot:sniping": "bun run src/bots/scripts/sniping.ts",
+        "bot:load": "bun run src/bots/scripts/load_test.ts",
+        "bot:load:small": "PARTICIPANT_BOTS=5 SNIPING_BOTS=1 INITIAL_BALANCE=100000000 bun run src/bots/scripts/load_test.ts",
+        "bot:load:medium": "PARTICIPANT_BOTS=20 SNIPING_BOTS=3 INITIAL_BALANCE=500000000 bun run src/bots/scripts/load_test.ts",
+        "bot:load:large": "PARTICIPANT_BOTS=50 SNIPING_BOTS=5 INITIAL_BALANCE=1000000000 bun run src/bots/scripts/load_test.ts",
+        "bot:load:extreme": "PARTICIPANT_BOTS=2000 SNIPING_BOTS=0 INITIAL_BALANCE=10000000000 bun run src/bots/scripts/load_test.ts"
     },
     "devDependencies": {
         "@types/bun": "latest",

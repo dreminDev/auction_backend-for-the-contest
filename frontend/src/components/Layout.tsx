@@ -23,7 +23,7 @@ export function Layout({ children, onLogout }: LayoutProps) {
     
     try {
       setAddingBalance(true);
-      await apiClient.addBalance(10000, 'stars');
+      await apiClient.addBalance(50000, 'stars'); // Добавляем 50 тысяч по умолчанию
       // Обновляем страницу для обновления баланса
       window.location.reload();
     } catch (error) {
@@ -68,9 +68,9 @@ export function Layout({ children, onLogout }: LayoutProps) {
                   onClick={handleAddBalance} 
                   className="navbar-add-balance-button"
                   disabled={addingBalance}
-                  title="Добавить 10,000 ⭐"
+                  title="Добавить 50,000 ⭐"
                 >
-                  {addingBalance ? '...' : '+10k ⭐'}
+                  {addingBalance ? '...' : '+50k ⭐'}
                 </button>
                 <span className="navbar-user-id">ID: {userId}</span>
                 <button onClick={handleLogout} className="navbar-logout-button">
