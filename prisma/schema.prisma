@@ -78,11 +78,10 @@ enum GiftType {
 }
 model GiftCollection {
   id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  collection GiftType @map("collection")
+  collection GiftType @unique @map("collection")
   supplyCount Int @map("supplyCount")
   addedAt  DateTime   @default(now()) @map("addedAt")
   @@map("gift_collections")
-  @@index([collection])
 }
 
 model GiftOwner {

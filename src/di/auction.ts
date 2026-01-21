@@ -4,6 +4,7 @@ import { ActionBetRepo } from "../repo/action_bet/mongo/repo";
 import { AuctionRepo } from "../repo/auction/mongo/repo";
 import { AuctionService } from "../service/auction/service";
 import { AuctionBidService } from "../service/bid/auction/service";
+import { AuctionWorker } from "../workers/auction/worker";
 
 export function httpAuctionController(this: DI) {
     const httpAuctionController = new HttpAuctionController(
@@ -46,4 +47,13 @@ export function auctionBidService(this: DI) {
     );
 
     return this.set("auctionBidService", auctionBidService);
+}
+
+export function auctionWorker(this: DI) {
+    const auctionWorker = new AuctionWorker(
+        this.AuctionBidService(),
+        this.AuctionService()
+    );
+
+    return this.set("auctionWorker", auctionWorker);
 }

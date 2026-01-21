@@ -11,7 +11,7 @@ export async function fetchBalanceByIdAndType(
     tx?: TxClient
 ) {
     const client = getTxClient(this.db, tx);
-    
+
     const balance = await client.balance.findFirst({
         where: {
             userId: input.userId,
@@ -28,7 +28,7 @@ export async function fetchBalancesByUserId(
     tx?: TxClient
 ) {
     const client = getTxClient(this.db, tx);
-    
+
     const balances = await client.balance.findMany({
         where: {
             userId: input.userId,

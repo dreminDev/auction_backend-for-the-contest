@@ -8,7 +8,7 @@ export async function createAuction(
     tx?: TxClient
 ) {
     const client = getTxClient(this.db, tx);
-    
+
     const newAuction = await client.auction.create({
         data: input,
     });

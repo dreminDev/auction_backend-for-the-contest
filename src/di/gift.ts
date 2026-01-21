@@ -1,6 +1,6 @@
 import { DI } from ".";
-import { GiftCollectionRepo } from "../repo/gift_collection/repo";
-import { GiftOwnerRepo } from "../repo/gift_owner/repo";
+import { GiftCollectionRepo } from "../repo/gift_collection/mongo/repo";
+import { GiftOwnerRepo } from "../repo/gift_owner/mongo/repo";
 
 export function giftOwnerRepo(this: DI) {
     const giftOwnerRepo = new GiftOwnerRepo(this.Database());

@@ -6,6 +6,7 @@ import {
     auctionBidService,
     auctionRepo,
     auctionService,
+    auctionWorker,
     httpAuctionController,
 } from "./auction";
 import { balanceRepo, balanceService } from "./balance";
@@ -36,17 +37,18 @@ export class DI {
     readonly BalanceRepo = balanceRepo;
     readonly BalanceService = balanceService;
 
-    readonly ActionRepo = actionRepo;
-    readonly ActionService = actionService;
-
     readonly HttpAuctionController = httpAuctionController;
     readonly AuctionRepo = auctionRepo;
     readonly ActionBetRepo = actionBetRepo;
     readonly AuctionService = auctionService;
     readonly AuctionBidService = auctionBidService;
+    readonly AuctionWorker = auctionWorker;
 
     readonly GiftOwnerRepo = giftOwnerRepo;
     readonly GiftCollectionRepo = giftCollectionRepo;
+
+    readonly ActionRepo = actionRepo;
+    readonly ActionService = actionService;
 
     constructor() {
         this.injections = new Map();

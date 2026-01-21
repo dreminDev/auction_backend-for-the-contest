@@ -11,7 +11,7 @@ export async function fetchAuction(
     tx?: TxClient
 ) {
     const client = getTxClient(this.db, tx);
-    
+
     const auction = await client.auction.findFirst({
         where: input,
     });
@@ -25,7 +25,7 @@ export async function fetchAuctionListByStatus(
     tx?: TxClient
 ) {
     const client = getTxClient(this.db, tx);
-    
+
     const auctionList = await client.auction.findMany({
         where: {
             status: input,

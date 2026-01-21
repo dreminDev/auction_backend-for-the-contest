@@ -1,5 +1,3 @@
-import type { AuctionStatus, BalanceType } from "@prisma/client";
-
 import decimal from "../../../../pkg/decimal";
 import { time } from "../../../../pkg/time";
 import {

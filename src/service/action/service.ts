@@ -1,5 +1,5 @@
 import type { ActionRepo } from "../../repo/action/mongo/repo";
-import { newAction } from "./newAction";
+import { newAction } from "./new_action";
 
 export class ActionService {
     protected actionRepo: ActionRepo;
