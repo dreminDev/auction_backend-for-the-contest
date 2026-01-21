@@ -23,7 +23,11 @@ export function auctionRepo(this: DI) {
 }
 
 export function auctionService(this: DI) {
-    const auctionService = new AuctionService(this.AuctionRepo());
+    const auctionService = new AuctionService(
+        this.AuctionRepo(),
+        this.GiftCollectionService(),
+        this.GiftOwnerService()
+    );
 
     return this.set("auctionService", auctionService);
 }

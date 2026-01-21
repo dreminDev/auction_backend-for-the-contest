@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import type { HttpAuctionController } from ".";
 import { time } from "../../../../../pkg/time";
+import { userIdSym } from "../../middleware/auth";
 import type { CreateAuctionIn } from "./dto/create";
 
 const validator = z.object({

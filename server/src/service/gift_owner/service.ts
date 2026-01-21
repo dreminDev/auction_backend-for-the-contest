@@ -1,7 +1,7 @@
 import type { GiftOwnerRepo } from "../../repo/gift_owner/mongo/repo";
 import type { GiftCollectionService } from "../gift_collection/service";
 import { createGiftOwner, createGiftOwnerUnique } from "./create";
-import { fetchGiftOwner, fetchGiftOwnersByUserId } from "./fetch";
+import { countGiftOwnersByGiftId, fetchGiftOwner, fetchGiftOwnersByUserId } from "./fetch";
 
 export class GiftOwnerService {
     protected giftOwnerRepo: GiftOwnerRepo;
@@ -16,4 +16,5 @@ export class GiftOwnerService {
     fetchGiftOwner = fetchGiftOwner;
     fetchGiftOwnersByUserId = fetchGiftOwnersByUserId;
     createGiftOwnerUnique = createGiftOwnerUnique;
+    countGiftOwnersByGiftId = countGiftOwnersByGiftId;
 }

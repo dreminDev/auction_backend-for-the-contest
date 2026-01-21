@@ -24,7 +24,6 @@ export async function auctionEnd(this: AuctionWorker) {
                     auctionId: auction.id,
                     round: auction.currentRound,
                 });
-                console.log(`betsList:`, betsList);
 
                 const supplyByRound = splitSupplyByRounds({
                     totalSupply: auction.supplyCount,
@@ -32,23 +31,16 @@ export async function auctionEnd(this: AuctionWorker) {
                     currentRound: auction.currentRound,
                 });
                 // временно убрал для тестов.
-                // if (
-                //     betsList.length === 0 /* ||
-                //     supplyByRound > betsList.length */
-                // ) {
-                //     // Если нет или недостаточно ставок в аукционе, то продлеваем аукцион на 5 минут.
-                //     await tx.auction.update({
-                //         where: { id: auction.id },
-                //         data: {
-                //             roundEndTime: time.add(
-                //                 new Date(auction.roundStartTime),
-                //                 time.minute(5)
-                //             ),
-                //         },
-                //     });
-                //     continue;
-                // }
-
+                if (betsList.length === 0 || supplyByRound > betsList.length) {
+                    await tx.auction.update({
+                        where: { id: auction.id },
+                        data: {
+                            roundEndTime: time.add(new Date(auction.roundEndTime), time.minute(5)),
+                        },
+                    });
+                    continue;
+                }
+                console.log(`betsList:`, betsList);
                 const sortedBets = [...betsList].sort((a, b) => b.amount - a.amount);
                 const winners = sortedBets.slice(0, supplyByRound);
                 const losers = sortedBets.slice(supplyByRound);

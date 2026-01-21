@@ -18,10 +18,9 @@ const fakeUser = {
 };
 
 export async function httpAuthMiddleware(this: HttpMiddleware, req: FastifyRequest) {
-
-    const userId = req.headers['user-id'];
+    const userId = req.headers["user-id"];
     if (!userId) {
-        throw new Error('User ID is required');
+        throw new Error("User ID is required");
     }
 
     req[userIdSym] = Number(userId);

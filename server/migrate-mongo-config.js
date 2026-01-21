@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 
-dotenv.config({ override: false })
+dotenv.config({ override: false });
 
 const config = {
     mongodb: {

@@ -1,5 +1,10 @@
 import { getTxClient, type TxClient } from "../../utils/tx";
-import type { FetchGiftOwnerIn, FetchGiftOwnerLastSerialNumberIn, FetchGiftOwnersByUserIdIn } from "../dto/fetch";
+import type {
+    CountGiftOwnersByGiftIdIn,
+    FetchGiftOwnerIn,
+    FetchGiftOwnerLastSerialNumberIn,
+    FetchGiftOwnersByUserIdIn,
+} from "../dto/fetch";
 import type { GiftOwnerRepo } from "./repo";
 
 export async function fetchGiftOwner(this: GiftOwnerRepo, input: FetchGiftOwnerIn, tx?: TxClient) {
@@ -41,4 +46,17 @@ export async function fetchGiftOwnerLastSerialNumber(
     });
 
     return giftOwner;
+}
+
+export async function countGiftOwnersByGiftId(
+    this: GiftOwnerRepo,
+    input: CountGiftOwnersByGiftIdIn,
+    tx?: TxClient
+) {
+    const client = getTxClient(this.db, tx);
+    const count = await client.giftOwner.count({
+        where: { giftId: input.giftId },
+    });
+
+    return count;
 }

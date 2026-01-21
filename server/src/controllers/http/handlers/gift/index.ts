@@ -27,7 +27,9 @@ export class HttpGiftsController {
     async setup() {
         await this.app.register(
             async (fastify) => {
-                fastify.get("/my", async (req: FastifyRequest, res) => this.fetchUserGifts(req, res));
+                fastify.get("/my", async (req: FastifyRequest, res) =>
+                    this.fetchUserGifts(req, res)
+                );
 
                 fastify.get("/collections", async (req: FastifyRequest, res) =>
                     this.fetchAvailableGifts(req, res)
@@ -37,4 +39,3 @@ export class HttpGiftsController {
         );
     }
 }
-

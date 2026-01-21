@@ -9,3 +9,7 @@ export type FetchGiftOwnersByUserIdIn = {
 export type FetchGiftOwnerLastSerialNumberIn = {
     giftId: string;
 };
+
+export type CountGiftOwnersByGiftIdIn = {
+    giftId: string;
+};
