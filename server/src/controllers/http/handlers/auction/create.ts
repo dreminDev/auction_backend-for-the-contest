@@ -26,9 +26,7 @@ export async function createAuction(
     const input: CreateAuctionIn = {
         roundCount: validated.data.roundCount,
         roundDuration: validated.data.roundDuration,
-        roundStartTime: time.now(),
         giftCollectionId: validated.data.giftCollectionId,
-        roundEndTime: time.addNow(validated.data.roundDuration),
         supplyCount: validated.data.supplyCount,
     };
 

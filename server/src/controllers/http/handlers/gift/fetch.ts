@@ -22,7 +22,7 @@ export async function fetchAvailableGifts(
     req: FastifyRequest,
     res: FastifyReply
 ) {
-    const giftCollections = await this.giftCollectionService.fetchGiftCollections();
+    const giftCollections = await this.giftCollectionService.fetchGiftCollectionsWithAvailable();
 
     res.send(giftCollections);
 }

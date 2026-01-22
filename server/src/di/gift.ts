@@ -37,7 +37,10 @@ export function giftOwnerService(this: DI) {
 }
 
 export function giftCollectionService(this: DI) {
-    const giftCollectionService = new GiftCollectionService(this.GiftCollectionRepo());
+    const giftCollectionService = new GiftCollectionService(
+        this.GiftCollectionRepo(),
+        this.GiftOwnerRepo()
+    );
 
     return this.set("giftCollectionService", giftCollectionService);
 }

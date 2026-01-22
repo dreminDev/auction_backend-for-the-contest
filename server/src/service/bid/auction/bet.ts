@@ -39,11 +39,14 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
     }
 
     const now = time.now();
-    const timeUntilEnd = time.diff(auction.roundEndTime, now);
     const tenSecondsInMs = time.second(10);
-    // Если время истекло, отказываем в ставке, аукцион завершается
-    if (timeUntilEnd <= 0) {
-        throw new BadRequestError("auction round time has expired");
+
+    const isTimerStarted = auction.roundEndTime !== null;
+    if (isTimerStarted) {
+        const timeUntilEnd = time.diff(auction.roundEndTime!, now);
+        if (timeUntilEnd <= 0) {
+            throw new BadRequestError("auction round time has expired");
+        }
     }
 
     const currentRoundBets = await this.fetchActionBetListByAuctionId({
@@ -78,9 +81,19 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
         }
     }
 
-    let newRoundEndTime = auction.roundEndTime;
-    if (timeUntilEnd < tenSecondsInMs) {
-        newRoundEndTime = time.addNow(time.second(10));
+    let newRoundEndTime: Date;
+    let newRoundStartTime: Date | undefined;
+
+    if (!isTimerStarted) {
+        newRoundStartTime = now;
+        newRoundEndTime = time.add(now, auction.roundDuration);
+    } else {
+        const timeUntilEnd = time.diff(auction.roundEndTime!, now);
+        if (timeUntilEnd < tenSecondsInMs) {
+            newRoundEndTime = time.addNow(time.second(10));
+        } else {
+            newRoundEndTime = auction.roundEndTime!;
+        }
     }
 
     const newBalance = new decimal(userInfoBalance.balance).sub(input.amount).toNumber();
@@ -94,6 +107,7 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
         await this.auctionRepo.withTx(tx).updateAuction({
             id: auction.id,
             roundEndTime: newRoundEndTime,
+            ...(newRoundStartTime && { roundStartTime: newRoundStartTime }),
         });
 
         if (userBets) {

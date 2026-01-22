@@ -14,7 +14,7 @@ export function CreateAuction() {
 
   const [formData, setFormData] = useState({
     roundCount: 5,
-    roundDuration: 60000,
+    roundDuration: 60, // в секундах
     supplyCount: 10,
     giftCollectionId: '',
   });
@@ -49,8 +49,8 @@ export function CreateAuction() {
       if (formData.roundCount < 1 || formData.roundCount > 100) {
         throw new Error('Количество раундов должно быть от 1 до 100');
       }
-      if (formData.roundDuration < 5000) {
-        throw new Error('Длительность раунда должна быть минимум 5000 мс (5 секунд)');
+      if (formData.roundDuration < 5) {
+        throw new Error('Длительность раунда должна быть минимум 5 секунд');
       }
       if (formData.supplyCount < 1) {
         throw new Error('Количество подарков должно быть минимум 1');
@@ -59,9 +59,12 @@ export function CreateAuction() {
         throw new Error('Выберите коллекцию подарков');
       }
 
+      // Конвертируем секунды в миллисекунды для API
+      const roundDurationMs = formData.roundDuration * 1000;
+
       const auction = await apiClient.createAuction(
         formData.roundCount,
-        formData.roundDuration,
+        roundDurationMs,
         formData.supplyCount,
         formData.giftCollectionId
       );
@@ -84,21 +87,24 @@ export function CreateAuction() {
     }
   };
 
-  const formatDuration = (ms: number) => {
-    const seconds = Math.floor(ms / 1000);
+  const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    if (minutes > 0 && secs > 0) {
+      return `${minutes} мин ${secs} сек`;
+    }
     if (minutes > 0) {
-      return `${minutes} мин ${seconds % 60} сек`;
+      return `${minutes} мин`;
     }
     return `${seconds} сек`;
   };
 
   const durationPresets = [
-    { label: '10 секунд', value: 10000 },
-    { label: '30 секунд', value: 30000 },
-    { label: '1 минута', value: 60000 },
-    { label: '2 минуты', value: 120000 },
-    { label: '5 минут', value: 300000 },
+    { label: '10 сек', value: 10 },
+    { label: '30 сек', value: 30 },
+    { label: '1 мин', value: 60 },
+    { label: '2 мин', value: 120 },
+    { label: '5 мин', value: 300 },
   ];
 
   if (loading) {
@@ -164,21 +170,22 @@ export function CreateAuction() {
             <input
               id="roundDuration"
               type="number"
-              min="5000"
-              step="1000"
+              min="5"
+              step="1"
               value={formData.roundDuration}
               onChange={(e) =>
                 setFormData(prev => ({
                   ...prev,
-                  roundDuration: parseInt(e.target.value, 10) || 5000,
+                  roundDuration: parseInt(e.target.value, 10) || 5,
                 }))
               }
               className="form-input"
               disabled={submitting}
               required
+              placeholder="Время в секундах"
             />
             <div className="form-hint">
-              Текущее значение: {formatDuration(formData.roundDuration)} (минимум 5 секунд)
+              {formatDuration(formData.roundDuration)} (минимум 5 секунд)
             </div>
           </div>
 
@@ -223,7 +230,7 @@ export function CreateAuction() {
               ) : (
                 collections.map((collection) => (
                   <option key={collection.id} value={collection.id}>
-                    {collection.collection} (доступно: {collection.supplyCount})
+                    {collection.collection} (доступно: {collection.availableCount} из {collection.supplyCount})
                   </option>
                 ))
               )}

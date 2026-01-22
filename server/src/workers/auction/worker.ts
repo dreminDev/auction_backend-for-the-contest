@@ -1,6 +1,7 @@
 import type { PrismaClient } from "@prisma/client";
 import { Mutex } from "async-mutex";
 
+import type { ActionService } from "../../service/action/service";
 import type { AuctionService } from "../../service/auction/service";
 import type { AuctionBidService } from "../../service/bid/auction/service";
 import type { GiftCollectionService } from "../../service/gift_collection/service";
@@ -11,6 +12,7 @@ export class AuctionWorker {
     protected readonly db: PrismaClient;
     protected readonly auctionBidService: AuctionBidService;
     protected readonly auctionService: AuctionService;
+    protected readonly actionService: ActionService;
     protected readonly giftCollectionService: GiftCollectionService;
     protected readonly giftOwnerService: GiftOwnerService;
 
@@ -21,12 +23,14 @@ export class AuctionWorker {
         db: PrismaClient,
         auctionBidService: AuctionBidService,
         auctionService: AuctionService,
+        actionService: ActionService,
         giftCollectionService: GiftCollectionService,
         giftOwnerService: GiftOwnerService
     ) {
         this.db = db;
         this.auctionBidService = auctionBidService;
         this.auctionService = auctionService;
+        this.actionService = actionService;
         this.giftCollectionService = giftCollectionService;
         this.giftOwnerService = giftOwnerService;
     }

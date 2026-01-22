@@ -47,8 +47,8 @@ model Auction {
   currentRound Int @default(1) @map("currentRound")
   roundDuration Int @map("roundDuration") 
 
-  roundStartTime DateTime @default(now()) @map("roundStartTime")
-  roundEndTime DateTime @map("roundEndTime") 
+  roundStartTime DateTime? @map("roundStartTime")
+  roundEndTime DateTime? @map("roundEndTime") 
 
   giftCollectionId String @map("giftCollectionId")
   supplyCount Int @map("supplyCount")
@@ -101,6 +101,7 @@ enum ActionType {
   register
   balance
   bet
+  win
 }
 model Action {
   id       String     @id @default(auto()) @map("_id") @db.ObjectId

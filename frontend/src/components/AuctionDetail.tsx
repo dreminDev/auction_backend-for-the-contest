@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
-import type { AuctionInfo, User } from '../api/client';
+import type { AuctionInfo, User, Winner } from '../api/client';
 import { BidTooLowError } from '../api/errors';
+import { WinnersTable } from './WinnersTable';
 import './AuctionDetail.css';
 
 export function AuctionDetail() {
@@ -10,6 +11,7 @@ export function AuctionDetail() {
   const navigate = useNavigate();
   const [auctionInfo, setAuctionInfo] = useState<AuctionInfo | null>(null);
   const [user, setUser] = useState<User | null>(null);
+  const [winners, setWinners] = useState<Winner[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [betAmount, setBetAmount] = useState(1);
@@ -47,6 +49,16 @@ export function AuctionDetail() {
     }
   }, []);
 
+  const loadWinners = useCallback(async () => {
+    if (!id) return;
+    try {
+      const data = await apiClient.getAuctionWinners(id);
+      setWinners(data);
+    } catch {
+      // Тихая обработка - победители могут отсутствовать
+    }
+  }, [id]);
+
   const loadAuctionInfo = useCallback(async () => {
     if (!id || isDraggingRef.current) return;
     
@@ -59,6 +71,11 @@ export function AuctionDetail() {
       }
 
       setAuctionInfo(data);
+      
+      // Загружаем победителей для завершенных аукционов
+      if (data.auction.status === 'ended') {
+        loadWinners();
+      }
       
       // Минимальная ставка всегда 1
       setMinBet(1);
@@ -73,7 +90,7 @@ export function AuctionDetail() {
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, loadWinners]);
 
   useEffect(() => {
     if (!id) {
@@ -324,39 +341,49 @@ export function AuctionDetail() {
           </div>
         )}
 
-        {/* Bets History */}
-        <div className="bets-history-telegram">
-          <h2 className="bets-history-title-telegram">История ставок</h2>
-          {bets.length === 0 ? (
-            <div className="empty-bets-telegram">Ставок пока нет</div>
-          ) : (
-            <div className="bets-list-telegram">
-              {sortedBets.map((bet, index) => {
-                if (!bet || !bet.id) return null;
-                const isCurrentUserBet = currentUserId !== null && bet.userId === currentUserId;
-                return (
-                  <div 
-                    key={bet.id} 
-                    className={`bet-item-telegram ${index === 0 ? 'top-bet-telegram' : ''} ${isCurrentUserBet ? 'my-bet-telegram' : ''}`}
-                  >
-                    <div className="bet-item-content-telegram">
-                      <div className="bet-item-rank-telegram">#{index + 1}</div>
-                      <div className="bet-item-info-telegram">
-                        <div className="bet-item-amount-telegram">
-                          {formatNumber(bet.amount)} <span className="bet-currency-small">⭐</span>
-                        </div>
-                        <div className="bet-item-user-telegram">
-                          {isCurrentUserBet ? 'Вы' : `Пользователь ${bet.userId}`}
+        {/* Winners Table for ended auctions */}
+        {!isActive && (
+          <div className="winners-section-telegram">
+            <h2 className="winners-section-title-telegram">🏆 Победители</h2>
+            <WinnersTable winners={winners} currentUserId={currentUserId} />
+          </div>
+        )}
+
+        {/* Bets History - only for active auctions */}
+        {isActive && (
+          <div className="bets-history-telegram">
+            <h2 className="bets-history-title-telegram">История ставок</h2>
+            {bets.length === 0 ? (
+              <div className="empty-bets-telegram">Ставок пока нет</div>
+            ) : (
+              <div className="bets-list-telegram">
+                {sortedBets.map((bet, index) => {
+                  if (!bet || !bet.id) return null;
+                  const isCurrentUserBet = currentUserId !== null && bet.userId === currentUserId;
+                  return (
+                    <div 
+                      key={bet.id} 
+                      className={`bet-item-telegram ${index === 0 ? 'top-bet-telegram' : ''} ${isCurrentUserBet ? 'my-bet-telegram' : ''}`}
+                    >
+                      <div className="bet-item-content-telegram">
+                        <div className="bet-item-rank-telegram">#{index + 1}</div>
+                        <div className="bet-item-info-telegram">
+                          <div className="bet-item-amount-telegram">
+                            {formatNumber(bet.amount)} <span className="bet-currency-small">⭐</span>
+                          </div>
+                          <div className="bet-item-user-telegram">
+                            {isCurrentUserBet ? 'Вы' : `Пользователь ${bet.userId}`}
+                          </div>
                         </div>
                       </div>
+                      <div className="bet-item-round-telegram">Раунд {bet.round}</div>
                     </div>
-                    <div className="bet-item-round-telegram">Раунд {bet.round}</div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -52,3 +52,24 @@ export async function fetchAuctionById(
 
     res.send(out);
 }
+
+const fetchAuctionWinnersValidator = z.object({
+    auctionId: z.string(),
+});
+
+export async function fetchAuctionWinners(
+    this: HttpAuctionController,
+    req: FastifyRequest,
+    res: FastifyReply
+) {
+    const validated = fetchAuctionWinnersValidator.safeParse(req.query);
+    if (!validated.success) {
+        return res.status(400).send({ error: validated.error.issues });
+    }
+
+    const winners = await this.actionService.fetchWinnersByAuctionId({
+        auctionId: validated.data.auctionId,
+    });
+
+    res.send(winners);
+}

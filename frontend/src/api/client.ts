@@ -61,6 +61,15 @@ export interface GiftCollection {
   id: string;
   collection: string;
   supplyCount: number;
+  availableCount: number;
+  addedAt: string;
+}
+
+export interface Winner {
+  userId: number;
+  round: number;
+  amount: number;
+  place: number;
   addedAt: string;
 }
 
@@ -221,6 +230,11 @@ class ApiClient {
       method: 'POST',
       body: JSON.stringify({ amount, type }),
     });
+  }
+
+  /** Получает список победителей аукциона */
+  async getAuctionWinners(auctionId: string): Promise<Winner[]> {
+    return this.request<Winner[]>(`/auction/winners?auctionId=${auctionId}`);
   }
 }
 

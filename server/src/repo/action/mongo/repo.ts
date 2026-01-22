@@ -1,7 +1,8 @@
 import type { PrismaClient } from "@prisma/client";
 
 import { createWithTx, type TxClient } from "../../utils/tx";
-import { createAction } from "./create";
+import { createAction, createManyWinnerActions } from "./create";
+import { fetchWinnersByAuctionId } from "./fetch";
 
 export class ActionRepo {
     protected db: PrismaClient;
@@ -11,6 +12,8 @@ export class ActionRepo {
     }
 
     createAction = createAction;
+    createManyWinnerActions = createManyWinnerActions;
+    fetchWinnersByAuctionId = fetchWinnersByAuctionId;
 
     withTx(tx: TxClient): this {
         return createWithTx(this, tx) as this;

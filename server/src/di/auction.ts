@@ -10,7 +10,8 @@ export function httpAuctionController(this: DI) {
     const httpAuctionController = new HttpAuctionController(
         this.HttpServer(),
         this.AuctionService(),
-        this.AuctionBidService()
+        this.AuctionBidService(),
+        this.ActionService()
     );
 
     return this.set("httpAuctionController", httpAuctionController);
@@ -59,6 +60,7 @@ export function auctionWorker(this: DI) {
         this.Database(),
         this.AuctionBidService(),
         this.AuctionService(),
+        this.ActionService(),
         this.GiftCollectionService(),
         this.GiftOwnerService()
     );
