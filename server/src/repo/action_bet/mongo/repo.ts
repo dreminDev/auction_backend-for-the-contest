@@ -2,6 +2,7 @@ import type { PrismaClient } from "@prisma/client";
 
 import { createWithTx, type TxClient } from "../../utils/tx";
 import { createAuctionBet } from "./create";
+import { deleteManyAuctionBets } from "./delete";
 import {
     fetchAuctionBets,
     fetchAuctionLastBetByAuctionId,
@@ -22,6 +23,7 @@ export class ActionBetRepo {
     fetchUserBetsByAuctionIdAndUserId = fetchUserBetsByAuctionIdAndUserId;
     updateAuctionBet = updateAuctionBet;
     updateManyAuctionBets = updateManyAuctionBets;
+    deleteManyAuctionBets = deleteManyAuctionBets;
 
     withTx(tx: TxClient): this {
         return createWithTx(this, tx) as this;

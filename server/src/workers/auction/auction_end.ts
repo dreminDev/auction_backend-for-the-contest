@@ -20,7 +20,6 @@ export async function auctionEnd(this: AuctionWorker) {
                     async (tx) => {
                         for (const auction of auctions) {
                             const endAunction = time.diff(auction.roundEndTime, time.now());
-                            console.log(`endAunction:`, endAunction);
                             if (endAunction > 0) {
                                 continue;
                             }
@@ -95,12 +94,8 @@ export async function auctionEnd(this: AuctionWorker) {
                                     });
 
                                     // Удаляем вернувшиеся ставки после возврата баланса
-                                    await tx.auctionBet.deleteMany({
-                                        where: {
-                                            id: {
-                                                in: losers.map((bet) => bet.id),
-                                            },
-                                        },
+                                    await this.auctionBidService.withTx(tx).deleteBets({
+                                        bets: losers,
                                     });
 
                                     await this.auctionService.withTx(tx).updateAuction({

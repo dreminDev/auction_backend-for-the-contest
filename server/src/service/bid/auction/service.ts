@@ -10,6 +10,7 @@ import type { AuctionService } from "../../auction/service";
 import type { BalanceService } from "../../balance/service";
 import type { UserService } from "../../user/service";
 import { newBet } from "./bet";
+import { deleteBets } from "./delete";
 import {
     fetchActionBetListByAuctionId,
     fetchAuctionById,
@@ -61,6 +62,7 @@ export class AuctionBidService {
     newBet = newBet;
     returnBetsBalance = returnBetsBalance;
     updateBetsToNextRound = updateBetsToNextRound;
+    deleteBets = deleteBets;
 
     withTx(tx: TxClient): this {
         return Object.assign(Object.create(Object.getPrototypeOf(this)), this, { tx });
