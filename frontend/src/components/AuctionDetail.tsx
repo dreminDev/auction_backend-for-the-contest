@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import type { AuctionInfo, User } from '../api/client';
+import { BidTooLowError } from '../api/errors';
 import './AuctionDetail.css';
 
 export function AuctionDetail() {
@@ -109,8 +110,12 @@ export function AuctionDetail() {
       await loadAuctionInfo();
       await loadUserBalance();
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Ошибка размещения ставки';
-      setError(errorMessage);
+      if (err instanceof BidTooLowError) {
+        setError(err.message);
+      } else {
+        const errorMessage = err instanceof Error ? err.message : 'Ошибка размещения ставки';
+        setError(errorMessage);
+      }
     } finally {
       setPlacingBet(false);
     }

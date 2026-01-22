@@ -1,4 +1,4 @@
-import { OutOfStockError } from './errors';
+import { OutOfStockError, BidTooLowError } from './errors';
 
 // В production используем относительный путь (API на том же сервере)
 const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:5000' : '';
@@ -122,6 +122,20 @@ class ApiClient {
         error = { message: `HTTP error! status: ${response.status}` };
       }
       
+      // Сначала проверяем error.message на специфичные ошибки (формат: { error: "Bad Request", message: "...", statusCode: 400 })
+      if (error.message && typeof error.message === 'string') {
+        // Проверяем "ставка должна быть выше"
+        const bidTooLowMatch = error.message.match(/bet must be higher than the last winning bet \((\d+)\).*Your total bet: (\d+)/i);
+        if (bidTooLowMatch) {
+          throw new BidTooLowError(parseInt(bidTooLowMatch[1], 10), parseInt(bidTooLowMatch[2], 10));
+        }
+        
+        // Проверяем OutOfStockError
+        if (error.name === 'OutOfStockError' || error.message.toLowerCase().includes('out of stock') || error.message.toLowerCase().includes('закончились')) {
+          throw new OutOfStockError(error.message);
+        }
+      }
+      
       // Обработка разных форматов ошибок от бекенда
       if (error.error) {
         // Формат: { error: [...] } или { error: "string" }
@@ -132,20 +146,10 @@ class ApiClient {
           throw new Error(errorMessages);
         }
         const errorMessage = typeof error.error === 'string' ? error.error : JSON.stringify(error.error);
-        
-        // Проверяем, является ли это ошибкой OutOfStockError
-        if (error.name === 'OutOfStockError' || errorMessage.toLowerCase().includes('out of stock') || errorMessage.toLowerCase().includes('закончились')) {
-          throw new OutOfStockError(errorMessage);
-        }
-        
         throw new Error(errorMessage);
       }
       
       if (error.message) {
-        // Проверяем, является ли это ошибкой OutOfStockError
-        if (error.name === 'OutOfStockError' || error.message.toLowerCase().includes('out of stock') || error.message.toLowerCase().includes('закончились')) {
-          throw new OutOfStockError(error.message);
-        }
         throw new Error(error.message);
       }
       
