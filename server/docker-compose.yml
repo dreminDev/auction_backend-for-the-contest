@@ -1,6 +1,24 @@
 version: "3.9"
 
 services:
+  backend:
+    build: .
+    container_name: auction_backend
+    restart: unless-stopped
+
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+    ports:
+      - "5000:5000"
+
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "mongodb://mongodb:27017/${MONGO_DB:-auction}?directConnection=true"
+      HTTP_SERVER_HOST: "0.0.0.0"
+      HTTP_SERVER_PORT: 5000
+
   mongodb:
     image: mongo:7
     container_name: mongodb
@@ -32,6 +50,16 @@ services:
               _id: \"rs0\",
               members: [{ _id: 0, host: \"localhost:27017\" }]
             })
+          }
+        ';
+        mongosh --quiet --eval '
+          db = db.getSiblingDB(\"admin\");
+          if (db.getUsers().users.length === 0) {
+            db.createUser({
+              user: \"dremin\",
+              pwd: \"2235\",
+              roles: [{ role: \"root\", db: \"admin\" }]
+            });
           }
         ';
         wait $$pid
