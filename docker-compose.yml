@@ -1,0 +1,72 @@
+version: "3.9"
+name: auction-app
+
+services:
+  # Frontend dev server
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:5000
+    volumes:
+      - ./frontend/src:/app/src:ro
+    depends_on:
+      - backend
+
+  # Backend API server
+  backend:
+    build: ./server
+    container_name: backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: "mongodb://mongodb:27017/auction?directConnection=true"
+      HTTP_SERVER_HOST: "0.0.0.0"
+      HTTP_SERVER_PORT: 5000
+    depends_on:
+      mongodb:
+        condition: service_healthy
+
+  # MongoDB with replica set
+  mongodb:
+    image: mongo:7
+    container_name: mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    command: >
+      bash -c "
+        mongod --replSet rs0 --bind_ip_all --oplogSize 128 &
+        pid=$$!;
+        until mongosh --quiet --eval 'db.runCommand({ ping: 1 })' >/dev/null 2>&1; do
+          sleep 1;
+        done;
+        mongosh --quiet --eval '
+          try {
+            rs.status()
+          } catch (e) {
+            rs.initiate({
+              _id: \"rs0\",
+              members: [{ _id: 0, host: \"localhost:27017\" }]
+            })
+          }
+        ';
+        wait $$pid
+      "
+    healthcheck:
+      test: >
+        mongosh --quiet --eval "rs.status().ok" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  mongo_data:
