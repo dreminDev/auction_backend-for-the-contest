@@ -49,7 +49,8 @@ export function CreateAuction() {
       if (formData.roundCount < 1 || formData.roundCount > 100) {
         throw new Error('Количество раундов должно быть от 1 до 100');
       }
-      if (formData.roundDuration < 5) {
+      // Проверяем в секундах (минимум 5 секунд)
+      if (formData.roundDuration < 5 || isNaN(formData.roundDuration)) {
         throw new Error('Длительность раунда должна быть минимум 5 секунд');
       }
       if (formData.supplyCount < 1) {
@@ -173,16 +174,21 @@ export function CreateAuction() {
               min="5"
               step="1"
               value={formData.roundDuration}
-              onChange={(e) =>
+              onChange={(e) => {
+                const value = parseInt(e.target.value, 10);
+                // Валидация: значение должно быть >= 5 секунд
+                if (isNaN(value) || value < 5) {
+                  return; // Не обновляем, если значение некорректно
+                }
                 setFormData(prev => ({
                   ...prev,
-                  roundDuration: parseInt(e.target.value, 10) || 5,
-                }))
-              }
+                  roundDuration: value,
+                }));
+              }}
               className="form-input"
               disabled={submitting}
               required
-              placeholder="Время в секундах"
+              placeholder="Время в секундах (минимум 5)"
             />
             <div className="form-hint">
               {formatDuration(formData.roundDuration)} (минимум 5 секунд)

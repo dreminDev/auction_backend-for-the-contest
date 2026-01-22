@@ -79,7 +79,10 @@ export function AuctionList() {
     };
   }, [statusFilter, loadAuctions]);
 
-  const formatTime = (dateString: string) => {
+  const formatTime = (dateString: string | null) => {
+    if (!dateString) {
+      return 'Не начат';
+    }
     try {
       const date = new Date(dateString);
       const diff = date.getTime() - currentTime.getTime();
@@ -171,7 +174,9 @@ export function AuctionList() {
             >
               <div className="auction-header">
                 <span className={`auction-status ${auction.status === 'active' ? 'active' : 'ended'}`}>
-                  {auction.status === 'active' ? 'Активен' : 'Завершен'}
+                  {auction.status === 'active' 
+                    ? (auction.roundEndTime === null ? 'Не начат' : 'Активен')
+                    : 'Завершен'}
                 </span>
                 <span className="auction-round">Раунд {auction.currentRound}/{auction.roundCount}</span>
               </div>

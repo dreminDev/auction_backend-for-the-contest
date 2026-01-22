@@ -170,7 +170,10 @@ export function AuctionDetail() {
     isDraggingRef.current = false;
   };
 
-  const formatTime = (dateString: string) => {
+  const formatTime = (dateString: string | null) => {
+    if (!dateString) {
+      return 'Не начат';
+    }
     try {
       const date = new Date(dateString);
       const now = new Date();
@@ -256,13 +259,17 @@ export function AuctionDetail() {
               <div className="auction-meta-telegram">
                 <span className="round-info">Раунд {auction.currentRound || 1}/{auction.roundCount || 1}</span>
                 {isActive && (
-                  <span className="status-active-telegram">● Активен</span>
+                  <span className="status-active-telegram">
+                    ● {auction.roundEndTime === null ? 'Не начат' : 'Активен'}
+                  </span>
                 )}
               </div>
             </div>
             <div className="timer-telegram">
-              <div className="timer-value-telegram">{formatTime(auction.roundEndTime || new Date().toISOString())}</div>
-              <div className="timer-label-telegram">до конца раунда</div>
+              <div className="timer-value-telegram">{formatTime(auction.roundEndTime)}</div>
+              <div className="timer-label-telegram">
+                {auction.roundEndTime === null ? 'ожидание первой ставки' : 'до конца раунда'}
+              </div>
             </div>
           </div>
         </div>

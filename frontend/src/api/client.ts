@@ -29,8 +29,8 @@ export interface Auction {
   roundCount: number;
   currentRound: number;
   roundDuration: number;
-  roundStartTime: string;
-  roundEndTime: string;
+  roundStartTime: string | null;
+  roundEndTime: string | null;
   giftCollectionId: string;
   supplyCount: number;
   addedAt: string;
@@ -149,9 +149,15 @@ class ApiClient {
       if (error.error) {
         // Формат: { error: [...] } или { error: "string" }
         if (Array.isArray(error.error)) {
-          const errorMessages = error.error.map((e: any) => 
-            e.message || `${e.path?.join('.')}: ${e.message || 'Invalid value'}`
-          ).join(', ');
+          const errorMessages = error.error.map((e: any) => {
+            let message = e.message || `${e.path?.join('.')}: ${e.message || 'Invalid value'}`;
+            // Конвертируем сообщения о миллисекундах в секунды для roundDuration
+            if (e.path?.includes('roundDuration') && message.includes('5000')) {
+              message = message.replace(/5000/g, '5 секунд');
+              message = message.replace(/milliseconds|ms|миллисекунд/g, 'секунд');
+            }
+            return message;
+          }).join(', ');
           throw new Error(errorMessages);
         }
         const errorMessage = typeof error.error === 'string' ? error.error : JSON.stringify(error.error);
