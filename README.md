@@ -14,8 +14,9 @@ Backend система для проведения аукционов с под�
 - **Логирование** — полная история всех операций
 
 ## Live Demo
+📹 [Видео демонстрация работы системы](https://disk.yandex.ru/d/QOVsST3f0lcDpA)
 
-📹 [Видео демонстрация работы системы](https://disk.yandex.ru/i/wZXIPHMUy1z3Qg)
+## Сайт
 
 ## Быстрый старт
 
@@ -24,9 +25,9 @@ Backend система для проведения аукционов с под�
 git clone https://github.com/user/auction_backend-for-the-contest.git
 cd auction_backend-for-the-contest
 
-# Запуск через Docker (frontend + backend + MongoDB)
 docker-compose up -d
 
+# фронт на http://localhost:3000
 # бекенд на http://localhost:5000
 ```
 

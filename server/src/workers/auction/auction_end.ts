@@ -46,7 +46,7 @@ export async function auctionEnd(this: AuctionWorker) {
                                     id: auction.id,
                                     roundEndTime: time.add(
                                         new Date(auction.roundEndTime!),
-                                        time.minute(5)
+                                        time.second(30)
                                     ),
                                 });
                                 continue;
