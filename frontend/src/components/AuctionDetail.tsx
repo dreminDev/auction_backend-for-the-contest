@@ -20,7 +20,19 @@ export function AuctionDetail() {
   const [placingBet, setPlacingBet] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isDraggingRef = useRef(false);
+  const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const currentUserId = apiClient.getUserId();
+
+  // Показать ошибку на 5 секунд
+  const showError = useCallback((message: string) => {
+    if (errorTimeoutRef.current) {
+      clearTimeout(errorTimeoutRef.current);
+    }
+    setError(message);
+    errorTimeoutRef.current = setTimeout(() => {
+      setError('');
+    }, 5000);
+  }, []);
 
   const loadUserBalance = useCallback(async () => {
     try {
@@ -63,7 +75,6 @@ export function AuctionDetail() {
     if (!id || isDraggingRef.current) return;
     
     try {
-      setError('');
       const data = await apiClient.getAuctionInfo(id);
       
       if (!data || !data.auction) {
@@ -85,12 +96,15 @@ export function AuctionDetail() {
         setBetAmount(prev => prev < 1 ? 1 : prev);
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки аукциона';
-      setError(errorMessage);
+      // Показываем ошибку загрузки только если нет данных
+      if (!auctionInfo) {
+        const errorMessage = err instanceof Error ? err.message : 'Ошибка загрузки аукциона';
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
-  }, [id, loadWinners]);
+  }, [id, loadWinners, auctionInfo]);
 
   useEffect(() => {
     if (!id) {
@@ -114,6 +128,9 @@ export function AuctionDetail() {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
+      if (errorTimeoutRef.current) {
+        clearTimeout(errorTimeoutRef.current);
+      }
     };
   }, [id, loadAuctionInfo, loadUserBalance]);
 
@@ -128,10 +145,10 @@ export function AuctionDetail() {
       await loadUserBalance();
     } catch (err) {
       if (err instanceof BidTooLowError) {
-        setError(err.message);
+        showError(err.message);
       } else {
         const errorMessage = err instanceof Error ? err.message : 'Ошибка размещения ставки';
-        setError(errorMessage);
+        showError(errorMessage);
       }
     } finally {
       setPlacingBet(false);

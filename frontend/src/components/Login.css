@@ -97,4 +97,28 @@
   color: #ff3b30;
   font-size: 14px;
   text-align: center;
+  animation: errorShake 0.5s ease-out;
+}
+
+@keyframes errorShake {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  20% {
+    opacity: 1;
+    transform: translateX(5px);
+  }
+  40% {
+    transform: translateX(-5px);
+  }
+  60% {
+    transform: translateX(3px);
+  }
+  80% {
+    transform: translateX(-2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
