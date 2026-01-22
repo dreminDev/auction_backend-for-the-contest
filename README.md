@@ -17,9 +17,10 @@ Backend система для проведения аукционов с под�
 git clone https://github.com/user/auction_backend-for-the-contest.git
 cd auction_backend-for-the-contest
 
-# Запуск через Docker
-cd server
+# Запуск через Docker (frontend + backend + MongoDB)
 docker-compose up -d
+
+# бекенд на http://localhost:5000
 ```
 
 ## Технологии
@@ -42,11 +43,13 @@ docker-compose up -d
 ## Структура проекта
 
 ```
+├── frontend/               # React SPA
+│   └── src/
 ├── server/                 # Backend сервер
 │   ├── src/
 │   │   ├── controllers/    # HTTP контроллеры
 │   │   ├── services/       # Бизнес-логика
-│   │   ├── repositories/   # Работа с БД
+│   │   ├── repo/           # Работа с БД
 │   │   └── workers/        # Фоновые задачи
 │   └── prisma/             # Схема БД
 ├── docs/                   # Документация

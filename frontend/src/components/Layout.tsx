@@ -23,9 +23,8 @@ export function Layout({ children, onLogout }: LayoutProps) {
     
     try {
       setAddingBalance(true);
-      await apiClient.addBalance(50000, 'stars'); // Добавляем 50 тысяч по умолчанию
-      // Обновляем страницу для обновления баланса
-      window.location.reload();
+      await apiClient.addBalance(50000, 'stars');
+      // Баланс обновится автоматически через интервал в компонентах
     } catch (error) {
       console.error('Ошибка при добавлении баланса:', error);
       alert('Не удалось добавить баланс');

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { apiClient, Gift } from '../api/client';
+import { apiClient } from '../api/client';
+import type { Gift } from '../api/client';
 import './Inventory.css';
 
 export function Inventory() {

@@ -1,6 +1,7 @@
 import { OutOfStockError } from './errors';
 
-const API_BASE_URL = 'http://localhost:5000';
+// В production используем относительный путь (API на том же сервере)
+const API_BASE_URL = import.meta.env.DEV ? 'http://localhost:5000' : '';
 
 export interface User {
   id: string;
@@ -68,22 +69,14 @@ class ApiClient {
 
   setUserId(userId: number) {
     this.userId = userId;
-    localStorage.setItem('userId', userId.toString());
   }
 
   getUserId(): number | null {
-    if (!this.userId) {
-      const stored = localStorage.getItem('userId');
-      if (stored) {
-        this.userId = parseInt(stored, 10);
-      }
-    }
     return this.userId;
   }
 
   clearUserId() {
     this.userId = null;
-    localStorage.removeItem('userId');
   }
 
   private async request<T>(
