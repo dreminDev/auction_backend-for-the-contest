@@ -86,8 +86,8 @@ curl -X GET "http://localhost:5000/auction?status=active"
         "roundCount": 5,
         "currentRound": 1,
         "roundDuration": 60000,
-        "roundStartTime": "2024-01-01T00:00:00.000Z",
-        "roundEndTime": "2024-01-01T00:01:00.000Z",
+        "roundStartTime": null,
+        "roundEndTime": null,
         "giftCollectionId": "...",
         "supplyCount": 10,
         "addedAt": "2024-01-01T00:00:00.000Z",
@@ -95,6 +95,8 @@ curl -X GET "http://localhost:5000/auction?status=active"
     }
 ]
 ```
+
+> **Примечание:** `roundStartTime` и `roundEndTime` будут `null` до первой ставки в раунде. Таймер запускается только после первой ставки.
 
 **Ошибки:**
 
@@ -135,14 +137,16 @@ curl -X PUT http://localhost:5000/auction \
     "roundCount": 5,
     "currentRound": 1,
     "roundDuration": 60000,
-    "roundStartTime": "2024-01-01T00:00:00.000Z",
-    "roundEndTime": "2024-01-01T00:01:00.000Z",
+    "roundStartTime": null,
+    "roundEndTime": null,
     "giftCollectionId": "507f1f77bcf86cd799439011",
     "supplyCount": 10,
     "addedAt": "2024-01-01T00:00:00.000Z",
     "endedAt": null
 }
 ```
+
+> **Примечание:** Аукцион создаётся с `roundStartTime` и `roundEndTime` равными `null`. Таймер раунда запустится автоматически при первой ставке.
 
 **Ошибки:**
 
@@ -241,8 +245,55 @@ curl -X POST http://localhost:5000/auction/bet \
 **Ошибки:**
 
 - `400 Bad Request` - неверные параметры запроса
-- `400 Bad Request` - недостаточно средств на балансе
+- `400 Bad Request` - ставка должна быть выше последней выигрывающей (`bet must be higher than the last winning bet`)
+- `402 Payment Required` - недостаточно средств на балансе
 - `400 Bad Request` - аукцион не активен или раунд завершен
+- `404 Not Found` - аукцион не найден
+
+> **Примечание о первой ставке:** Первая ставка в раунде запускает таймер. До этого `roundEndTime` будет `null` и раунд не может завершиться.
+
+> **Примечание о перебивающих ставках:** Если количество ставок >= количеству призовых мест в раунде, новая ставка должна быть больше последней выигрывающей ставки.
+
+### GET `/auction/winners`
+
+Получить список победителей аукциона.
+
+**Аутентификация:** Не требуется
+
+**Параметры запроса (query):**
+
+- `auctionId` (обязательный, строка) - идентификатор аукциона
+
+**Пример запроса:**
+
+```bash
+curl -X GET "http://localhost:5000/auction/winners?auctionId=507f1f77bcf86cd799439011"
+```
+
+**Пример ответа (200 OK):**
+
+```json
+[
+    {
+        "userId": 123456,
+        "round": 1,
+        "amount": 150,
+        "place": 1,
+        "addedAt": "2024-01-01T00:01:00.000Z"
+    },
+    {
+        "userId": 789012,
+        "round": 1,
+        "amount": 120,
+        "place": 2,
+        "addedAt": "2024-01-01T00:01:00.000Z"
+    }
+]
+```
+
+**Ошибки:**
+
+- `400 Bad Request` - неверные параметры запроса
 
 ---
 
@@ -285,7 +336,7 @@ curl -X GET http://localhost:5000/gifts/my \
 
 ### GET `/gifts/collections`
 
-Получить список всех доступных коллекций подарков.
+Получить список всех коллекций подарков с информацией о доступном количестве.
 
 **Аутентификация:** Не требуется
 
@@ -305,16 +356,22 @@ curl -X GET http://localhost:5000/gifts/collections
         "id": "507f1f77bcf86cd799439011",
         "collection": "plush_pepe",
         "supplyCount": 100,
+        "availableCount": 85,
         "addedAt": "2024-01-01T00:00:00.000Z"
     },
     {
         "id": "507f1f77bcf86cd799439012",
         "collection": "plush_fox",
         "supplyCount": 50,
+        "availableCount": 50,
         "addedAt": "2024-01-01T00:00:00.000Z"
     }
 ]
 ```
+
+> **Поля:**
+> - `supplyCount` - общее количество подарков в коллекции
+> - `availableCount` - количество ещё не выданных подарков
 
 **Ошибки:** Нет
 
