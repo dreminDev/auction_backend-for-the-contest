@@ -53,17 +53,6 @@ docker-compose up -d
 └── load_test/              # Нагрузочные тесты
 ```
 
-## API Endpoints
-
-| Метод | Endpoint | Описание |
-|-------|----------|----------|
-| POST | `/user/register` | Регистрация пользователя |
-| POST | `/user/balance` | Пополнение баланса |
-| GET | `/auction` | Список аукционов |
-| POST | `/auction` | Создание аукциона |
-| POST | `/auction/:id/bid` | Размещение ставки |
-| GET | `/gift/user/:id` | Подарки пользователя |
-
 ## Производительность
 
 > Подробные результаты: [load_test/RESULTS.md](load_test/RESULTS.md)
