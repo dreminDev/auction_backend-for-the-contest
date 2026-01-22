@@ -64,7 +64,7 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
     // Проверяем, что ставка перебивающая (больше последней выигрывающей ставки)
     // Исключаем ставку пользователя из списка для корректной проверки
     const betsWithoutUser = currentRoundBets.filter((bet) => bet.userId !== input.userId);
-    
+
     if (betsWithoutUser.length >= supplyByRound) {
         // Сортируем ставки по убыванию и берем последнюю выигрывающую ставку
         const sortedBets = [...betsWithoutUser].sort((a, b) => b.amount - a.amount);

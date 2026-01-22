@@ -4,7 +4,7 @@ import type { AuctionWorker } from "./worker";
 
 export async function auctionEnd(this: AuctionWorker) {
     const release = await this.mutex.acquire();
-    
+
     try {
         const auctions = await this.auctionService.fetchAuctionListByStatus("active");
         if (auctions.length === 0) {
@@ -13,7 +13,7 @@ export async function auctionEnd(this: AuctionWorker) {
 
         const maxRetries = 5;
         let retries = 0;
-        
+
         while (retries < maxRetries) {
             try {
                 await this.db.$transaction(
@@ -25,10 +25,11 @@ export async function auctionEnd(this: AuctionWorker) {
                             }
 
                             // Получаем ставки текущего раунда
-                            const betsList = await this.auctionBidService.fetchActionBetListByAuctionId({
-                                auctionId: auction.id,
-                                round: auction.currentRound,
-                            });
+                            const betsList =
+                                await this.auctionBidService.fetchActionBetListByAuctionId({
+                                    auctionId: auction.id,
+                                    round: auction.currentRound,
+                                });
 
                             const supplyByRound = splitSupplyByRounds({
                                 totalSupply: auction.supplyCount,
@@ -39,7 +40,10 @@ export async function auctionEnd(this: AuctionWorker) {
                             if (betsList.length === 0 || supplyByRound > betsList.length) {
                                 await this.auctionService.withTx(tx).updateAuction({
                                     id: auction.id,
-                                    roundEndTime: time.add(new Date(auction.roundEndTime), time.minute(5)),
+                                    roundEndTime: time.add(
+                                        new Date(auction.roundEndTime),
+                                        time.minute(5)
+                                    ),
                                 });
                                 continue;
                             }
@@ -85,7 +89,10 @@ export async function auctionEnd(this: AuctionWorker) {
                                         id: auction.id,
                                         currentRound: nextRound,
                                         roundStartTime: nextRoundStartTime,
-                                        roundEndTime: time.add(nextRoundStartTime, auction.roundDuration),
+                                        roundEndTime: time.add(
+                                            nextRoundStartTime,
+                                            auction.roundDuration
+                                        ),
                                     });
                                 } else {
                                     // Возвращаем баланс, так как это последний раунд
@@ -112,7 +119,10 @@ export async function auctionEnd(this: AuctionWorker) {
                                         id: auction.id,
                                         currentRound: nextRound,
                                         roundStartTime: nextRoundStartTime,
-                                        roundEndTime: time.add(nextRoundStartTime, auction.roundDuration),
+                                        roundEndTime: time.add(
+                                            nextRoundStartTime,
+                                            auction.roundDuration
+                                        ),
                                     });
                                 } else {
                                     await this.auctionService.withTx(tx).updateAuction({
@@ -125,7 +135,7 @@ export async function auctionEnd(this: AuctionWorker) {
                         }
                     },
                     {
-                        maxWait: 30_000, 
+                        maxWait: 30_000,
                         timeout: 120_000,
                     }
                 );
@@ -134,7 +144,9 @@ export async function auctionEnd(this: AuctionWorker) {
                 if (error?.code === "P2034" && retries < maxRetries - 1) {
                     retries++;
                     const delay = Math.min(100 * Math.pow(2, retries), 1000);
-                    console.log(`Transaction conflict detected, retrying (${retries}/${maxRetries}) after ${delay}ms`);
+                    console.log(
+                        `Transaction conflict detected, retrying (${retries}/${maxRetries}) after ${delay}ms`
+                    );
                     await new Promise((resolve) => setTimeout(resolve, delay));
                     continue;
                 }

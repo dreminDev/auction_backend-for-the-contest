@@ -1,29 +1,7 @@
 import type { App } from ".";
-import { config } from "../config";
-import { BaseError } from "../error/customError";
 
 export async function httpServer(this: App) {
     const httpServer = this.di.HttpServer();
-
-    // Обработчик ошибок для правильного форматирования BaseError
-    httpServer.setErrorHandler((error, request, reply) => {
-        if (error instanceof BaseError) {
-            return reply.status(error.statusCode).send({
-                error: error.message,
-                name: error.name,
-            });
-        }
-
-        // Для других ошибок возвращаем 500
-        this.di.logger.error({
-            cause: error,
-            message: "Unhandled error in HTTP handler",
-        });
-
-        return reply.status(500).send({
-            error: "Internal server error",
-        });
-    });
 
     const httpMiddleware = this.di.HttpMiddleware();
     await httpMiddleware.setup();

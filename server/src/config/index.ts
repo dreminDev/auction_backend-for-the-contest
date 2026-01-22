@@ -13,7 +13,6 @@ const configValidator = z.object({
     HTTP_SERVER_PORT: z.string().transform(Number).default(5000),
 });
 
-
 const parsed = configValidator.safeParse(process.env);
 if (!parsed.success) {
     const errMessage: Record<string, string> = {};
