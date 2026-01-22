@@ -1,3 +1,5 @@
+import { OutOfStockError } from './errors';
+
 const API_BASE_URL = 'http://localhost:5000';
 
 export interface User {
@@ -136,10 +138,21 @@ class ApiClient {
           ).join(', ');
           throw new Error(errorMessages);
         }
-        throw new Error(typeof error.error === 'string' ? error.error : JSON.stringify(error.error));
+        const errorMessage = typeof error.error === 'string' ? error.error : JSON.stringify(error.error);
+        
+        // Проверяем, является ли это ошибкой OutOfStockError
+        if (error.name === 'OutOfStockError' || errorMessage.toLowerCase().includes('out of stock') || errorMessage.toLowerCase().includes('закончились')) {
+          throw new OutOfStockError(errorMessage);
+        }
+        
+        throw new Error(errorMessage);
       }
       
       if (error.message) {
+        // Проверяем, является ли это ошибкой OutOfStockError
+        if (error.name === 'OutOfStockError' || error.message.toLowerCase().includes('out of stock') || error.message.toLowerCase().includes('закончились')) {
+          throw new OutOfStockError(error.message);
+        }
         throw new Error(error.message);
       }
       

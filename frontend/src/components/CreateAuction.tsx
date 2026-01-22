@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { apiClient } from '../api/client';
 import type { GiftCollection } from '../api/client';
+import { OutOfStockError } from '../api/errors';
 import './CreateAuction.css';
 
 export function CreateAuction() {
@@ -72,8 +73,12 @@ export function CreateAuction() {
       // Перенаправляем на страницу созданного аукциона
       navigate(`/auction/${auction.id}`);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Ошибка создания аукциона';
-      setError(errorMessage);
+      if (err instanceof OutOfStockError) {
+        setError('Подарки из этой коллекции закончились. Выберите другую коллекцию.');
+      } else {
+        const errorMessage = err instanceof Error ? err.message : 'Ошибка создания аукциона';
+        setError(errorMessage);
+      }
     } finally {
       setSubmitting(false);
     }

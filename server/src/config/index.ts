@@ -13,20 +13,8 @@ const configValidator = z.object({
     HTTP_SERVER_PORT: z.string().transform(Number).default(5000),
 });
 
-const envConfig = dotenv.config({
-    debug: IS_DEV,
-});
 
-if (envConfig.error || !envConfig.parsed) {
-    logger.fatal({
-        cause: envConfig.error,
-        message: "some error ocured while parsing .env, please recheck and try again",
-    });
-
-    process.exit(1);
-}
-
-const parsed = configValidator.safeParse(envConfig.parsed);
+const parsed = configValidator.safeParse(process.env);
 if (!parsed.success) {
     const errMessage: Record<string, string> = {};
 

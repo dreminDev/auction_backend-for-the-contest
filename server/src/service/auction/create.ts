@@ -1,4 +1,4 @@
-import { BadRequestError, NotFoundError } from "../../error/customError";
+import { BadRequestError, NotFoundError, OutOfStockError } from "../../error/customError";
 import type { CreateAuctionIn } from "../../repo/auction/dto/create";
 import type { AuctionService } from "./service";
 
@@ -25,6 +25,10 @@ export async function createAuction(this: AuctionService, input: CreateAuctionIn
         });
 
         const availableGifts = giftCollection.supplyCount - issuedGiftsCount;
+
+        if (availableGifts <= 0) {
+            throw new OutOfStockError("Gift collection is out of stock");
+        }
 
         if (input.supplyCount > availableGifts) {
             throw new BadRequestError(
