@@ -1,9 +1,10 @@
 version: "3.9"
+name: service-backend-for-contest
 
 services:
   backend:
     build: .
-    container_name: auction_backend
+    container_name: backend
     restart: unless-stopped
 
     depends_on:
