@@ -1,3 +1,5 @@
+import type { Prisma } from "@prisma/client";
+
 import { getTxClient, type TxClient } from "../../utils/tx";
 import type { UpdateAuctionIn } from "../dto/update";
 import type { AuctionRepo } from "./repo";
@@ -5,7 +7,7 @@ import type { AuctionRepo } from "./repo";
 export async function updateAuction(this: AuctionRepo, input: UpdateAuctionIn, tx?: TxClient) {
     const client = getTxClient(this.db, tx);
 
-    const data: Record<string, unknown> = {};
+    const data: Prisma.AuctionUpdateInput = {};
     if (input.roundEndTime !== undefined) data.roundEndTime = input.roundEndTime;
     if (input.currentRound !== undefined) data.currentRound = input.currentRound;
     if (input.roundStartTime !== undefined) data.roundStartTime = input.roundStartTime;
