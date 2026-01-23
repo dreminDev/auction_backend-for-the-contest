@@ -1,5 +1,4 @@
-import type { TxClient } from "../../utils/tx";
-import { getTxClient } from "../../utils/tx";
+import { getTxClient, type TxClient } from "../../utils/tx";
 import type { FetchWinnersByAuctionIdIn, Winner } from "../dto/fetch";
 import type { ActionRepo } from "./repo";
 
