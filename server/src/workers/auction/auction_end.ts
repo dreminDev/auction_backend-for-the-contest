@@ -1,6 +1,6 @@
 import { time } from "../../../pkg/time";
-import { transactionWithRetry } from "../../../repo/utils/tx";
-import type { TxClient } from "../../../repo/utils/tx";
+import { transactionWithRetry } from "../../repo/utils/tx";
+import type { TxClient } from "../../repo/utils/tx";
 import { splitSupplyByRounds } from "../../utils/auction/suplyByRound";
 import type { AuctionWorker } from "./worker";
 
