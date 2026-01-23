@@ -96,7 +96,6 @@ class ApiClient {
       'Content-Type': 'application/json',
     };
 
-    // Копируем существующие заголовки из options
     if (options.headers) {
       if (options.headers instanceof Headers) {
         options.headers.forEach((value, key) => {
