@@ -1,7 +1,7 @@
 import { OutOfStockError, BidTooLowError } from './errors';
 
 // В production используем относительный путь (API на том же сервере)
-const API_BASE_URL = import.meta.env.DEV ? 'https://nestars.site/contest' : '';
+const API_BASE_URL = import.meta.env.DEV ? 'https://nestars.site/contest' : 'https://nestars.site/contest';
 
 export interface User {
   id: string;
