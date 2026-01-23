@@ -1,6 +1,7 @@
 import decimal from "../../../../pkg/decimal";
 import { time } from "../../../../pkg/time";
 import { BadRequestError, NotFoundError, PaymentRequiredError } from "../../../error/customError";
+import { transactionWithRetry } from "../../../repo/utils/tx";
 import { splitSupplyByRounds } from "../../../utils/auction/suplyByRound";
 import type { NewBetIn } from "./dto/bet";
 import type { AuctionBidService } from "./service";
@@ -98,58 +99,61 @@ export async function newBet(this: AuctionBidService, input: NewBetIn) {
 
     const newBalance = new decimal(userInfoBalance.balance).sub(input.amount).toNumber();
 
-    await this.db.$transaction(async (tx) => {
-        await this.balanceRepo.withTx(tx).updateBalance({
-            id: userInfoBalance.id,
-            balance: newBalance,
-        });
-
-        await this.auctionRepo.withTx(tx).updateAuction({
-            id: auction.id,
-            roundEndTime: newRoundEndTime,
-            ...(newRoundStartTime && { roundStartTime: newRoundStartTime }),
-        });
-
-        if (userBets) {
-            const newBetAmount = input.amount + userBets.amount;
-            const oldBalance = new decimal((userBets.metaData as any).oldBalance).toNumber();
-
-            await this.actionBetRepo.withTx(tx).updateAuctionBet({
-                id: userBets.id,
-                amount: newBetAmount,
-                round: auction.currentRound,
-                metaData: {
-                    oldBalance: oldBalance,
-                    newBalance: newBalance,
-                    balanceType: input.balanceType,
-                },
+    await transactionWithRetry(
+        this.db,
+        async (tx) => {
+            await this.balanceRepo.withTx(tx).updateBalance({
+                id: userInfoBalance.id,
+                balance: newBalance,
             });
-        } else {
-            await this.actionBetRepo.withTx(tx).createAuctionBet({
-                auctionId: auction.id,
-                amount: input.amount,
+
+            await this.auctionRepo.withTx(tx).updateAuction({
+                id: auction.id,
+                roundEndTime: newRoundEndTime,
+                ...(newRoundStartTime && { roundStartTime: newRoundStartTime }),
+            });
+
+            if (userBets) {
+                const newBetAmount = input.amount + userBets.amount;
+                const oldBalance = new decimal((userBets.metaData as any).oldBalance).toNumber();
+
+                await this.actionBetRepo.withTx(tx).updateAuctionBet({
+                    id: userBets.id,
+                    amount: newBetAmount,
+                    round: auction.currentRound,
+                    metaData: {
+                        oldBalance: oldBalance,
+                        newBalance: newBalance,
+                        balanceType: input.balanceType,
+                    },
+                });
+            } else {
+                await this.actionBetRepo.withTx(tx).createAuctionBet({
+                    auctionId: auction.id,
+                    amount: input.amount,
+                    userId: input.userId,
+                    round: auction.currentRound,
+                    addedAt: time.now(),
+                    metaData: {
+                        oldBalance: userInfoBalance.balance,
+                        newBalance: newBalance,
+                        balanceType: input.balanceType,
+                    },
+                });
+            }
+
+            await this.actionRepo.withTx(tx).createAction({
                 userId: input.userId,
-                round: auction.currentRound,
-                addedAt: time.now(),
+                action: "bet",
                 metaData: {
+                    auctionId: auction.id,
+                    amount: input.amount,
+                    balanceType: input.balanceType,
                     oldBalance: userInfoBalance.balance,
                     newBalance: newBalance,
-                    balanceType: input.balanceType,
                 },
+                addedAt: now,
             });
         }
-
-        await this.actionRepo.withTx(tx).createAction({
-            userId: input.userId,
-            action: "bet",
-            metaData: {
-                auctionId: auction.id,
-                amount: input.amount,
-                balanceType: input.balanceType,
-                oldBalance: userInfoBalance.balance,
-                newBalance: newBalance,
-            },
-            addedAt: now,
-        });
-    });
+    );
 }

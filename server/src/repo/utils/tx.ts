@@ -21,3 +21,38 @@ export function createWithTx<T extends object>(repo: T, tx: TxClient): T {
         },
     });
 }
+
+export async function transactionWithRetry<T>(
+    db: PrismaClient,
+    callback: (tx: TxClient) => Promise<T>,
+    options?: {
+        maxRetries?: number;
+        maxWait?: number;
+        timeout?: number;
+    }
+): Promise<T> {
+    const maxRetries = options?.maxRetries ?? 5;
+    let retries = 0;
+
+    while (retries < maxRetries) {
+        try {
+            return await db.$transaction(
+                callback,
+                {
+                    maxWait: options?.maxWait ?? 30_000,
+                    timeout: options?.timeout ?? 120_000,
+                }
+            );
+        } catch (error: any) {
+            if (error?.code === "P2034" && retries < maxRetries - 1) {
+                retries++;
+                const delay = Math.min(100 * Math.pow(2, retries), 1000);
+                await new Promise((resolve) => setTimeout(resolve, delay));
+                continue;
+            }
+            throw error;
+        }
+    }
+
+    throw new Error("Transaction failed after max retries");
+}

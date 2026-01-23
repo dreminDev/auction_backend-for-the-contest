@@ -1,3 +1,4 @@
+import { transactionWithRetry } from "../../repo/utils/tx";
 import type { CreateUserIn } from "../../repo/user/dto/create";
 import type { RegisterUserOut } from "./dto/register";
 import type { UserService } from "./service";
@@ -43,13 +44,16 @@ export async function registerUser(
     // дефолтный баланс для пользователя, поэтому создаем его вместе с регистрацией.
     if (!fetchUserBalance) {
         // так как мы не используем уникальность баланса, т.к это физически невозможно ограничить на уровне бд, мы используем транзакцию, дабы избежать race condition.
-        await this.db.$transaction(async (tx) => {
-            out.balance = await this.balanceRepo.withTx(tx).createBalance({
-                userId: input.userId,
-                type: "stars",
-                balance: 0,
-            });
-        });
+        await transactionWithRetry(
+            this.db,
+            async (tx) => {
+                out.balance = await this.balanceRepo.withTx(tx).createBalance({
+                    userId: input.userId,
+                    type: "stars",
+                    balance: 0,
+                });
+            }
+        );
     }
 
     // собираем статистику действий пользователя для метрик бизнеса/графаны
