@@ -1,19 +1,23 @@
 import type { App } from ".";
 
+const API_PREFIX = "/contest";
+
 export async function httpServer(this: App) {
     const httpServer = this.di.HttpServer();
 
     const httpMiddleware = this.di.HttpMiddleware();
     await httpMiddleware.setup();
 
-    const httpUserController = this.di.HttpUserController();
-    await httpUserController.setup();
+    await httpServer.register(async (apiRouter) => {
+        const httpUserController = this.di.HttpUserController();
+        await httpUserController.setup(apiRouter);
 
-    const httpAuctionController = this.di.HttpAuctionController();
-    await httpAuctionController.setup();
+        const httpAuctionController = this.di.HttpAuctionController();
+        await httpAuctionController.setup(apiRouter);
 
-    const httpGiftsController = this.di.HttpGiftsController();
-    await httpGiftsController.setup();
+        const httpGiftsController = this.di.HttpGiftsController();
+        await httpGiftsController.setup(apiRouter);
+    }, { prefix: API_PREFIX });
 
     try {
         await httpServer.ready();

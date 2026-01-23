@@ -20,8 +20,8 @@ export class HttpUserController {
     fetchByUser = fetchByUser;
     addBalance = addBalance;
 
-    async setup() {
-        await this.app.register(
+    async setup(app: FastifyInstance) {
+        await app.register(
             async (fastify) => {
                 fastify.get("/", async (req, res) => this.fetchByUser(req, res));
                 fastify.post("/balance", async (req, res) => this.addBalance(req, res));

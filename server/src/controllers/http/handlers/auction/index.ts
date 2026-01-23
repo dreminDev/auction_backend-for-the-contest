@@ -35,8 +35,8 @@ export class HttpAuctionController {
     fetchAuctionWinners = fetchAuctionWinners;
     bet = bet;
 
-    async setup() {
-        await this.app.register(
+    async setup(app: FastifyInstance) {
+        await app.register(
             async (fastify) => {
                 fastify.get(
                     "/",

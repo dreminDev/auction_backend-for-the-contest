@@ -24,8 +24,8 @@ export class HttpGiftsController {
     fetchUserGifts = fetchUserGifts;
     fetchAvailableGifts = fetchAvailableGifts;
 
-    async setup() {
-        await this.app.register(
+    async setup(app: FastifyInstance) {
+        await app.register(
             async (fastify) => {
                 fastify.get("/my", async (req: FastifyRequest, res) =>
                     this.fetchUserGifts(req, res)
