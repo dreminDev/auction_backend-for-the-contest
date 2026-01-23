@@ -19,13 +19,10 @@ export async function updateBetsToNextRound(
     const tx = this.tx;
     const betRepo = tx ? this.actionBetRepo.withTx(tx) : this.actionBetRepo;
 
-    const updatedBets = await betRepo.updateManyAuctionBets(
-        {
-            ids: input.bets.map((bet) => bet.id),
-            round: input.nextRound,
-        },
-        tx
-    );
+    const updatedBets = await betRepo.updateManyAuctionBets({
+        ids: input.bets.map((bet) => bet.id),
+        round: input.nextRound,
+    });
 
     return updatedBets;
 }

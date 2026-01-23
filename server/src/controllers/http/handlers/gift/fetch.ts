@@ -10,11 +10,11 @@ export async function fetchUserGifts(
 ) {
     const userId = req[userIdSym];
 
-    const gifts = await this.giftOwnerService.fetchGiftOwnersByUserId({
+    const out = await this.giftOwnerService.fetchGiftOwnersByUserId({
         userId,
     });
 
-    res.send(gifts);
+    res.send(out);
 }
 
 export async function fetchAvailableGifts(
@@ -22,7 +22,7 @@ export async function fetchAvailableGifts(
     req: FastifyRequest,
     res: FastifyReply
 ) {
-    const giftCollections = await this.giftCollectionService.fetchGiftCollectionsWithAvailable();
+    const out = await this.giftCollectionService.fetchGiftCollectionsWithAvailable();
 
-    res.send(giftCollections);
+    res.send(out);
 }
